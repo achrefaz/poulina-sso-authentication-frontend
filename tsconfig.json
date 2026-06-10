@@ -11,6 +11,9 @@
     "skipLibCheck": true,
     "isolatedModules": true,
     "experimentalDecorators": true,
+    "paths": {
+      "shared-auth": ["./dist/shared-auth"]
+    },
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve"
@@ -21,5 +24,37 @@
     "strictInputAccessModifiers": true,
     "strictTemplates": true
   },
-  "files": []
+  "files": [],
+  "references": [
+    {
+      "path": "./projects/sso/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/sso/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/rh-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/rh-app/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/finance-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/finance-app/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/dashboard-app/tsconfig.app.json"
+    },
+    {
+      "path": "./projects/dashboard-app/tsconfig.spec.json"
+    },
+    {
+      "path": "./projects/shared-auth/tsconfig.lib.json"
+    },
+    {
+      "path": "./projects/shared-auth/tsconfig.spec.json"
+    }
+  ]
 }
