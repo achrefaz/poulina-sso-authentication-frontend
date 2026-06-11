@@ -10,6 +10,13 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/mfa/mfa.component').then((m) => m.MfaComponent),
   },
   {
+    path: 'change-password',
+    loadComponent: () =>
+      import('./pages/change-password/change-password.component').then(
+        (m) => m.ChangePasswordComponent,
+      ),
+  },
+  {
     path: 'email-not-verified',
     loadComponent: () =>
       import('./pages/email-not-verified/email-not-verified.component').then(
