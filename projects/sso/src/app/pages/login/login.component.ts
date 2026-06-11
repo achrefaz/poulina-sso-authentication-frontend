@@ -75,6 +75,23 @@ export class LoginComponent implements OnInit {
         return;
       }
 
+      // Changement de mot de passe obligatoire (nouvel utilisateur créé par admin)
+      if ((result as any)?.passwordChangeRequired === true) {
+        this.router.navigate(['/change-password'], {
+          queryParams: {
+            accessToken: (result as any).accessToken,
+            // Tous les params OAuth2 nécessaires pour relancer le flow après succès
+            clientId: this.oauthParams.clientId,
+            redirectUri: this.oauthParams.redirectUri,
+            state: this.oauthParams.state,
+            codeChallenge: this.oauthParams.codeChallenge,
+            codeChallengeMethod: this.oauthParams.codeChallengeMethod,
+            scope: this.oauthParams.scope,
+          },
+        });
+        return;
+      }
+
       if ((result as any)?.redirectUri) {
         window.location.href = (result as any).redirectUri;
       }

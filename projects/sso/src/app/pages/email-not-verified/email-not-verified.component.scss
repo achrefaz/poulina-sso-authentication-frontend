@@ -87,8 +87,10 @@ h2 {
 
 .alert {
   width: 100%;
-  padding: 12px 14px;
-  border-radius: 8px;
+  padding: 13px 16px;
+  border-radius: 10px;
+  font-weight: 500;
+  border: 1px solid transparent;
   font-size: 0.87rem;
   line-height: 1.5;
   margin-bottom: 16px;
@@ -101,9 +103,15 @@ h2 {
   }
 
   &.alert-error {
-    background: var(--error-bg);
-    color: var(--error);
-    border-left: 3px solid var(--error);
+    background: #fff5f5;
+    color: #c0392b;
+    border-color: #fbd0cc;
+  }
+
+  &.alert-success {
+    background: #f0fdf4;
+    color: #166534;
+    border-color: #bbf7d0;
   }
 }
 
