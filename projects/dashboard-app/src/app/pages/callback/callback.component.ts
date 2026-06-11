@@ -2,18 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 
-function getQueryParam(search: string, key: string): string | null {
-  const qs = search.startsWith('?') ? search.slice(1) : search;
-  for (const segment of qs.split('&')) {
-    const eq = segment.indexOf('=');
-    if (eq === -1) continue;
-    if (decodeURIComponent(segment.slice(0, eq)) === key) {
-      return decodeURIComponent(segment.slice(eq + 1));
-    }
-  }
-  return null;
-}
-
 @Component({
   selector: 'app-callback',
   standalone: true,
@@ -23,19 +11,15 @@ function getQueryParam(search: string, key: string): string | null {
 export class CallbackComponent implements OnInit {
   errorMessage = '';
 
-  private readonly code: string | null;
-  private readonly state: string | null;
-
   constructor(
     private authService: AuthService,
     private router: Router,
-  ) {
-    this.code = getQueryParam(window.location.search, 'code');
-    this.state = getQueryParam(window.location.search, 'state');
-  }
+  ) {}
 
   ngOnInit(): void {
-    const { code, state } = this;
+    const params = new URLSearchParams(window.location.search);
+    const code   = params.get('code');
+    const state  = params.get('state');
 
     if (!code || !state) {
       this.errorMessage = 'Paramètres de callback manquants.';
@@ -46,7 +30,7 @@ export class CallbackComponent implements OnInit {
       next: () => this.router.navigate(['/']),
       error: (err) => {
         console.error('Échange code échoué', err);
-        this.errorMessage = "Échec de l'authentification. Veuillez réessayer.";
+        this.errorMessage = 'Échec de l\'authentification. Veuillez réessayer.';
       },
     });
   }

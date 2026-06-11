@@ -1,9 +1,8 @@
 import { Routes } from '@angular/router';
-import { HomeComponent } from './pages/home/home.component';
-import { CallbackComponent } from './pages/callback/callback.component';
 import { authGuard } from './core/guards/auth.guard';
 
 export const routes: Routes = [
+
   {
     path: 'callback',
     loadComponent: () =>
@@ -14,5 +13,6 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/home/home.component').then((m) => m.HomeComponent),
     canActivate: [authGuard],
   },
-  { path: '**', redirectTo: '' },
+
+  { path: '**', redirectTo: '', pathMatch: 'full' },
 ];

@@ -21,6 +21,11 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/confirm-email/confirm-email.component').then((m) => m.ConfirmEmailComponent),
   },
+  {
+    path: 'access-denied',
+    loadComponent: () =>
+      import('./pages/access-denied/access-denied.component').then((m) => m.AccessDeniedComponent),
+  },
   { path: '', pathMatch: 'full', redirectTo: 'login' },
   { path: '**', redirectTo: 'login' },
 ];

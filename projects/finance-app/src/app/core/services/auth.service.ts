@@ -11,37 +11,37 @@ import {
 } from 'shared-auth';
 import type { TokenResponse, RefreshResponse, UserInfo } from 'shared-auth';
 
-const SSO_URL      = 'http://localhost:4200';
-const CLIENT_ID    = 'finance-client';
+const SSO_URL = 'http://localhost:4200';
+const CLIENT_ID = 'finance-client';
 const REDIRECT_URI = 'http://localhost:3002/callback';
-const SCOPES       = 'openid profile email';
+const SCOPES = 'openid profile email';
 const KEY_VERIFIER = 'pkce_verifier';
-const KEY_STATE    = 'oauth_state';
+const KEY_STATE = 'oauth_state';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  private readonly http   = inject(HttpClient);
-  private readonly store  = inject(TokenStore);
+  private readonly http = inject(HttpClient);
+  private readonly store = inject(TokenStore);
   private readonly config = inject(SHARED_AUTH_CONFIG);
   private get api(): string {
     return this.config.apiUrl;
   }
 
   async redirectToSso(): Promise<void> {
-    const verifier  = generateCodeVerifier();
+    const verifier = generateCodeVerifier();
     const challenge = await generateCodeChallenge(verifier);
-    const state     = generateState();
+    const state = generateState();
 
     sessionStorage.setItem(KEY_VERIFIER, verifier);
     sessionStorage.setItem(KEY_STATE, state);
 
     const params = new URLSearchParams({
-      client_id:             CLIENT_ID,
-      redirect_uri:          REDIRECT_URI,
-      response_type:         'code',
-      scope:                 SCOPES,
+      client_id: CLIENT_ID,
+      redirect_uri: REDIRECT_URI,
+      response_type: 'code',
+      scope: SCOPES,
       state,
-      code_challenge:        challenge,
+      code_challenge: challenge,
       code_challenge_method: 'S256',
     });
 
@@ -49,20 +49,20 @@ export class AuthService {
   }
 
   exchangeCode(code: string, returnedState: string): Observable<TokenResponse> {
-    const verifier   = sessionStorage.getItem(KEY_VERIFIER);
+    const verifier = sessionStorage.getItem(KEY_VERIFIER);
     const savedState = sessionStorage.getItem(KEY_STATE);
 
-    if (!verifier)                  throw new Error('code_verifier manquant.');
+    if (!verifier) throw new Error('code_verifier manquant.');
     if (returnedState !== savedState) throw new Error('state invalide.');
 
     return this.http
       .post<TokenResponse>(
         `${this.api}/api/Auth/token`,
         {
-          grantType:    'authorization_code',
+          grantType: 'authorization_code',
           code,
-          clientId:     CLIENT_ID,
-          redirectUri:  REDIRECT_URI,
+          clientId: CLIENT_ID,
+          redirectUri: REDIRECT_URI,
           codeVerifier: verifier,
         },
         { withCredentials: true },
@@ -77,9 +77,14 @@ export class AuthService {
       );
   }
 
+  // Envoie le clientId pour que le backend valide le rôle par app
   refresh(): Observable<RefreshResponse> {
     return this.http
-      .post<RefreshResponse>(`${this.api}/api/Auth/refresh`, {}, { withCredentials: true })
+      .post<RefreshResponse>(
+        `${this.api}/api/Auth/refresh`,
+        { clientId: CLIENT_ID },
+        { withCredentials: true },
+      )
       .pipe(
         tap((res) => this.store.setToken(res.accessToken, res.expiresIn)),
         catchError((err) => throwError(() => err)),
@@ -92,6 +97,11 @@ export class AuthService {
       .pipe(catchError((err) => throwError(() => err)));
   }
 
+  /**
+   * Single Logout : le backend révoque TOUS les refresh tokens de l'utilisateur
+   * (toutes apps confondues). On vide ensuite le token mémoire et on redirige
+   * vers le SSO pour que la page de login soit propre.
+   */
   logout(): Observable<{ message: string }> {
     return this.http
       .post<{ message: string }>(`${this.api}/api/Auth/logout`, {}, { withCredentials: true })

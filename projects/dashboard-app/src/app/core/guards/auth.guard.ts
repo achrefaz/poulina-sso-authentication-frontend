@@ -5,14 +5,14 @@ import { AuthService } from '../services/auth.service';
 import { firstValueFrom } from 'rxjs';
 
 const SSO_URL = 'http://localhost:4200';
-const CLIENT_ID = 'finance-client';
+const CLIENT_ID = 'dashboard-client';
+
 
 export const authGuard: CanActivateFn = async () => {
   const store = inject(TokenStore);
   const service = inject(AuthService);
 
   if (store.isAuthenticated()) return true;
-
   try {
     await firstValueFrom(service.refresh());
     return true;
@@ -31,6 +31,7 @@ export const authGuard: CanActivateFn = async () => {
       window.location.href = `${SSO_URL}/access-denied?${params.toString()}`;
       return false;
     }
+
 
     await service.redirectToSso();
     return false;
