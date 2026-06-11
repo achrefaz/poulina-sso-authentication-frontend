@@ -26,19 +26,17 @@ export class HomeComponent implements OnInit {
     year: 'numeric',
   });
 
-  // ── MFA state ──────────────────────────────────────────────────────────────
   mfaEnabled: boolean = false;
   mfaStep: MfaStep = 'idle';
   mfaLoading: boolean = false;
   mfaError: string = '';
   mfaSuccess: string = '';
 
-  // Setup MFA
+
   qrCodeBase64 = '';
   manualSecret = '';
   otpAuthUri = '';
 
-  // Codes saisis
   setupCode = '';
   disableCode = '';
 
@@ -66,7 +64,6 @@ export class HomeComponent implements OnInit {
     return `${this.userInfo.given_name[0] ?? ''}${this.userInfo.family_name[0] ?? ''}`.toUpperCase();
   }
 
-  // ── Activer MFA — étape 1 : générer QR
   startMfaSetup(): void {
     this.mfaLoading = true;
     this.mfaError = '';
@@ -94,7 +91,6 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  // ── Activer MFA — étape 2 : vérifier le code ──────────────────────────────
   confirmMfaSetup(): void {
     if (this.setupCode.length !== 6) {
       this.mfaError = 'Le code doit contenir 6 chiffres.';
@@ -123,7 +119,6 @@ export class HomeComponent implements OnInit {
       });
   }
 
-  // ── Désactiver MFA ─────────────────────────────────────────────────────────
   startMfaDisable(): void {
     this.mfaStep = 'disable';
     this.mfaError = '';
@@ -175,7 +170,6 @@ export class HomeComponent implements OnInit {
     if (field === 'disable') this.disableCode = clean;
   }
 
-  // ── Logout ─────────────────────────────────────────────────────────────────
   async logout(): Promise<void> {
     this.isLoggingOut = true;
     try {

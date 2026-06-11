@@ -12,8 +12,8 @@ import {
 import type { TokenResponse, RefreshResponse, UserInfo } from 'shared-auth';
 
 const SSO_URL = 'http://localhost:4200';
-const CLIENT_ID = 'rh-client';
-const REDIRECT_URI = 'http://localhost:3001/callback';
+const CLIENT_ID = 'dashboard-client';
+const REDIRECT_URI = 'http://localhost:3003/callback';
 const SCOPES = 'openid profile email';
 const KEY_VERIFIER = 'pkce_verifier';
 const KEY_STATE = 'oauth_state';
@@ -77,7 +77,6 @@ export class AuthService {
       );
   }
 
-  // Envoie le clientId pour que le backend valide le rôle par app
   refresh(): Observable<RefreshResponse> {
     return this.http
       .post<RefreshResponse>(
@@ -97,11 +96,6 @@ export class AuthService {
       .pipe(catchError((err) => throwError(() => err)));
   }
 
-  /**
-   * Single Logout : le backend révoque TOUS les refresh tokens de l'utilisateur
-   * (toutes apps confondues). On vide ensuite le token mémoire et on redirige
-   * vers le SSO pour que la page de login soit propre.
-   */
   logout(): Observable<{ message: string }> {
     return this.http
       .post<{ message: string }>(`${this.api}/api/Auth/logout`, {}, { withCredentials: true })

@@ -105,6 +105,15 @@ export class LoginComponent implements OnInit {
         return;
       }
 
+      if (body.error === 'access_denied') {
+        this.router.navigate(['/access-denied'], {
+          queryParams: {
+            clientId: this.oauthParams?.clientId ?? '',
+          },
+        });
+        return;
+      }
+
       if (body.errorCode === 'LOCKED') {
         this.errorMessage = 'Compte temporairement bloqué. Réessayez dans quelques minutes.';
       } else if (body.errorCode === 'DISABLED') {

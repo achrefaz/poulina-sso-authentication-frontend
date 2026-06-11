@@ -1,0 +1,453 @@
+<div class="app-shell">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">Poulina</span>
+          <span class="brand-module">Tableau de bord Direction</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="topbar-nav" aria-label="Navigation principale">
+      <a href="#" class="nav-link active">Vue globale</a>
+      <a href="#" class="nav-link">Performance</a>
+      <a href="#" class="nav-link">Subsidiaires</a>
+      <a href="#" class="nav-link">Stratégie</a>
+    </nav>
+
+    <div class="topbar-right">
+      @if (userInfo) {
+        <div class="user-pill">
+          <div class="avatar" aria-hidden="true">{{ initials }}</div>
+          <div class="user-info">
+            <span class="user-name">{{ userInfo.given_name }} {{ userInfo.family_name }}</span>
+            <span class="user-role">{{ userInfo.roles[0] || 'Utilisateur' }}</span>
+          </div>
+          <button class="logout-btn" (click)="logout()" [disabled]="isLoggingOut" aria-label="Se déconnecter">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M13 7l3 3-3 3M16 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 3H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- En-tête -->
+    <div class="page-header">
+      @if (userInfo) {
+        <div>
+          <h1>Bonjour, {{ userInfo.given_name }} 👋</h1>
+          <p class="page-sub">Tableau de bord Direction — {{ today }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><p class="stat-label">Subsidiaires actives</p><p class="stat-value">14</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><p class="stat-label">Effectif total</p><p class="stat-value">{{ users.length || '—' }}</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><p class="stat-label">Croissance annuelle</p><p class="stat-value">+8.4%</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><p class="stat-label">Projets stratégiques</p><p class="stat-value">7</p></div>
+      </div>
+    </div>
+
+    <!-- Modules -->
+    <div class="section-header"><h2>Modules disponibles</h2></div>
+    <div class="modules-grid">
+      <button class="module-card" type="button">
+        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-body"><h3>Performance globale</h3><p>KPI et indicateurs clés</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button">
+        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Subsidiaires</h3><p>Vue consolidée du groupe</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button">
+        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Finances consolidées</h3><p>Résultats et bilans groupe</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button" (click)="isAdmin && openUserList()">
+        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M19 8v6M22 11h-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Gestion des utilisateurs</h3><p>Créer, gérer et bloquer les comptes</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════════════
+         GESTION DES UTILISATEURS (ADMIN uniquement)
+    ════════════════════════════════════════════════════════════════════════ -->
+    @if (isAdmin && adminView !== 'none') {
+      <div class="admin-section">
+
+        <!-- Header avec tabs -->
+        <div class="admin-header">
+          <div class="admin-tabs">
+            <button
+              class="admin-tab"
+              [class.active]="adminView === 'list'"
+              (click)="openUserList()">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Liste des utilisateurs
+            </button>
+            <button
+              class="admin-tab"
+              [class.active]="adminView === 'create'"
+              (click)="openCreateUser()">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Créer un utilisateur
+            </button>
+          </div>
+          <button class="admin-close" (click)="closeAdmin()" aria-label="Fermer">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M5 5l10 10M15 5L5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          </button>
+        </div>
+
+        <!-- ── Vue liste ─────────────────────────────────────────────────── -->
+        @if (adminView === 'list') {
+
+          <div class="admin-toolbar">
+            <button class="btn-refresh" (click)="loadUsers()" [disabled]="usersLoading">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 1 0 1.2-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Actualiser
+            </button>
+            <button class="btn-add" (click)="openCreateUser()">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Nouvel utilisateur
+            </button>
+          </div>
+
+          @if (usersError) {
+            <div class="alert-error">{{ usersError }}</div>
+          }
+
+          @if (usersLoading) {
+            <div class="users-loading">
+              <span class="spinner-sm"></span> Chargement…
+            </div>
+          }
+
+          @if (!usersLoading && users.length > 0) {
+            <div class="users-table-wrap">
+              <table class="users-table">
+                <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>Email</th>
+                  <th>Rôles</th>
+                  <th>Statut</th>
+                  <th>Email vérifié</th>
+                  <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (user of users; track user.id) {
+                    <tr>
+                      <td>
+                        <div class="user-cell">
+                          <div class="user-avatar-sm">{{ user.prenom[0] }}{{ user.nom[0] }}</div>
+                          <span>{{ user.prenom }} {{ user.nom }}</span>
+                        </div>
+                      </td>
+                      <td class="email-cell">{{ user.email }}</td>
+                      <td>
+                        <div class="roles-cell">
+                          @for (role of user.roles; track role.id) {
+                            <span class="role-badge-sm">{{ role.nom }}</span>
+                          }
+                          @if (user.roles.length === 0) {
+                            <span class="no-role">—</span>
+                          }
+                        </div>
+                      </td>
+                      <td>
+                        <span class="status-badge" [class]="user.statut.toLowerCase()">
+                          {{ user.statut }}
+                        </span>
+                      </td>
+                      <td>
+                        @if (user.emailVerifie) {
+                          <span class="verified-yes">✓ Vérifié</span>
+                        } @else {
+                          <span class="verified-no">✗ En attente</span>
+                        }
+                      </td>
+                      <td>
+                        @if (blockingUserId === user.id) {
+                          <!-- Formulaire de blocage inline -->
+                          <div class="block-form">
+                            <input
+                              type="text"
+                              class="block-input"
+                              placeholder="Raison du blocage…"
+                              [(ngModel)]="blockRaison"
+                            />
+                            @if (blockError) {
+                              <p class="block-error">{{ blockError }}</p>
+                            }
+                            <div class="block-actions">
+                              <button class="btn-block-confirm" (click)="confirmBlock(user)" [disabled]="blockLoading">
+                                Confirmer
+                              </button>
+                              <button class="btn-block-cancel" (click)="cancelBlock()">Annuler</button>
+                            </div>
+                          </div>
+                        } @else {
+                          <div class="action-btns">
+                            @if (user.statut === 'ACTIF') {
+                              <button class="btn-action danger" (click)="startBlock(user.id)" title="Bloquer">
+                                <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                                Bloquer
+                              </button>
+                            }
+                            @if (user.statut === 'BLOQUE') {
+                              <button class="btn-action success" (click)="debloquer(user)" title="Débloquer">
+                                <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                                Débloquer
+                              </button>
+                            }
+                          </div>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+          }
+
+          @if (!usersLoading && users.length === 0 && !usersError) {
+            <div class="empty-state">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M24 28a8 8 0 1 0 0-16 8 8 0 0 0 0 16z" stroke="currentColor" stroke-width="1.5"/><path d="M8 42c0-8.837 7.163-16 16-16s16 7.163 16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <p>Aucun utilisateur trouvé.</p>
+            </div>
+          }
+        }
+
+        <!-- ── Vue création ───────────────────────────────────────────────── -->
+        @if (adminView === 'create') {
+          <div class="create-form">
+
+            @if (createSuccess) {
+              <div class="alert-success">
+                <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10l2.5 2.5 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                {{ createSuccess }}
+              </div>
+            }
+
+            @if (createError) {
+              <div class="alert-error">{{ createError }}</div>
+            }
+
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">Prénom <span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="Prénom" [(ngModel)]="newUser.prenom" />
+              </div>
+              <div class="form-group">
+                <label class="form-label">Nom <span class="required">*</span></label>
+                <input type="text" class="form-input" placeholder="Nom de famille" [(ngModel)]="newUser.nom" />
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Email professionnel <span class="required">*</span></label>
+                <input type="email" class="form-input" placeholder="prenom.nom@poulina.com" [(ngModel)]="newUser.email" />
+              </div>
+              <div class="form-group full">
+                <label class="form-label">Mot de passe temporaire <span class="required">*</span></label>
+                <input type="password" class="form-input" placeholder="Min. 8 caractères" [(ngModel)]="newUser.password" />
+                <p class="form-hint">L'utilisateur devra le changer à sa première connexion.</p>
+              </div>
+            </div>
+
+            <!-- Sélection des rôles -->
+            <div class="form-group full">
+              <label class="form-label">Rôles assignés</label>
+              @if (roles.length > 0) {
+                <div class="roles-picker">
+                  @for (role of roles; track role.id) {
+                    <button
+                      type="button"
+                      class="role-toggle"
+                      [class.selected]="isRoleSelected(role.id)"
+                      (click)="toggleRole(role.id)">
+                      <svg viewBox="0 0 20 20" fill="none" class="role-check">
+                        <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+                        @if (isRoleSelected(role.id)) {
+                          <path d="M6.5 10l2.5 2.5 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                        }
+                      </svg>
+                      <span class="role-nom">{{ role.nom }}</span>
+                      @if (role.description) {
+                        <span class="role-desc">{{ role.description }}</span>
+                      }
+                    </button>
+                  }
+                </div>
+              } @else {
+                <p class="form-hint">Chargement des rôles…</p>
+              }
+            </div>
+
+            <div class="form-actions">
+              <button class="btn-cancel-form" (click)="openUserList()">Annuler</button>
+              <button class="btn-create" (click)="createUser()" [disabled]="createLoading">
+                @if (createLoading) { <span class="spinner-sm"></span> }
+                Créer l'utilisateur
+              </button>
+            </div>
+
+          </div>
+        }
+
+      </div>
+    }
+
+    <!-- Profil + MFA -->
+    @if (userInfo) {
+      <div class="info-section">
+
+        <div class="info-section-header">
+          <h2>Votre profil</h2>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ userInfo.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Statut</span>
+            <span class="info-value">
+              <span class="status-dot active" aria-hidden="true"></span>
+              {{ userInfo.statut }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Rôles</span>
+            <span class="info-value roles">
+              @for (role of userInfo.roles; track role) {
+                <span class="role-badge">{{ role }}</span>
+              }
+            </span>
+          </div>
+        </div>
+
+        <!-- Section MFA -->
+        <div class="mfa-section">
+          <div class="mfa-header">
+            <div class="mfa-title-row">
+              <div class="mfa-icon-wrap" [class.active]="mfaEnabled" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="5" y="11" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                </svg>
+              </div>
+              <div>
+                <p class="mfa-title">Double authentification (MFA)</p>
+                <p class="mfa-sub">
+                  @if (mfaEnabled) {
+                    <span class="badge-on">Activé</span> Votre compte est protégé par un code TOTP.
+                  } @else {
+                    <span class="badge-off">Désactivé</span> Renforcez la sécurité de votre compte.
+                  }
+                </p>
+              </div>
+            </div>
+
+            @if (mfaStep === 'idle') {
+              @if (!mfaEnabled) {
+                <button class="btn-mfa-enable" (click)="startMfaSetup()" [disabled]="mfaLoading">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Activer le MFA
+                </button>
+              } @else {
+                <button class="btn-mfa-disable" (click)="startMfaDisable()">Désactiver le MFA</button>
+              }
+            }
+          </div>
+
+          @if (mfaSuccess) {
+            <div class="alert-success" role="status">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10l2.5 2.5 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {{ mfaSuccess }}
+            </div>
+          }
+
+          @if (mfaError) {
+            <div class="alert-error" role="alert">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              {{ mfaError }}
+            </div>
+          }
+
+          @if (mfaStep === 'qr') {
+            <div class="mfa-box">
+              <p class="mfa-instruction"><strong>Étape 1</strong> — Scannez ce QR code avec <strong>Google Authenticator</strong> ou <strong>Authy</strong>.</p>
+              <div class="qr-wrapper"><img [src]="qrCodeBase64" alt="QR Code MFA" class="qr-img" /></div>
+              <p class="mfa-manual">Vous ne pouvez pas scanner ? Saisissez manuellement : <code>{{ manualSecret }}</code></p>
+              <div class="mfa-divider"></div>
+              <p class="mfa-instruction"><strong>Étape 2</strong> — Entrez le code à 6 chiffres affiché dans votre application.</p>
+              <input type="text" inputmode="numeric" placeholder="000000" maxlength="6" [value]="setupCode" (input)="onCodeInput($event, 'setup')" class="otp-input" [disabled]="mfaLoading" />
+              <div class="mfa-actions">
+                <button class="btn-cancel" (click)="cancelMfa()" [disabled]="mfaLoading">Annuler</button>
+                <button class="btn-confirm" (click)="confirmMfaSetup()" [disabled]="mfaLoading || setupCode.length < 6">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Confirmer l'activation
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (mfaStep === 'disable') {
+            <div class="mfa-box warning">
+              <p class="mfa-instruction">Entrez le code TOTP de votre application pour <strong>désactiver</strong> le MFA.</p>
+              <input type="text" inputmode="numeric" placeholder="000000" maxlength="6" [value]="disableCode" (input)="onCodeInput($event, 'disable')" class="otp-input" [disabled]="mfaLoading" />
+              <div class="mfa-actions">
+                <button class="btn-cancel" (click)="cancelMfa()" [disabled]="mfaLoading">Annuler</button>
+                <button class="btn-danger" (click)="confirmMfaDisable()" [disabled]="mfaLoading || disableCode.length < 6">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Désactiver le MFA
+                </button>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    }
+
+  </main>
+</div>

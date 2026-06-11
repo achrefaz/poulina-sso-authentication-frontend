@@ -1,0 +1,78 @@
+<div class="ad-shell">
+
+  <div class="ad-card">
+
+    <!-- Icône -->
+    <div class="ad-icon-wrap" aria-hidden="true">
+      <svg viewBox="0 0 48 48" fill="none">
+        <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2.5"/>
+        <path d="M16 32 C16 24 24 18 24 18 C24 18 32 24 32 32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M17 17 L31 31" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+
+    <!-- Titre -->
+    <h1 class="ad-title">Accès refusé</h1>
+
+    <!-- Message principal -->
+    <p class="ad-msg">
+      Vous n'avez pas les droits nécessaires pour accéder à
+      <strong>{{ platformLabel }}</strong>.
+    </p>
+
+    <!-- Rôles requis -->
+    @if (requiredRoles.length > 0) {
+      <div class="ad-roles-box">
+        <p class="ad-roles-label">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          Cette plateforme est réservée aux rôles suivants :
+        </p>
+        <div class="ad-roles-list">
+          @for (role of requiredRoles; track role) {
+            <span class="ad-role-badge">{{ role }}</span>
+          }
+        </div>
+      </div>
+    }
+
+    <!-- Rôle actuel si connu -->
+    @if (userRole) {
+      <p class="ad-current-role">
+        Votre rôle actuel : <span class="ad-role-badge current">{{ userRole }}</span>
+      </p>
+    }
+
+    <!-- Actions -->
+    <div class="ad-actions">
+      @if (userRole) {
+        <button class="ad-btn primary" (click)="goToLogin()">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 17l-7-7 7-7M3 10h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Aller à ma plateforme
+        </button>
+      }
+      <button class="ad-btn secondary" (click)="goBack()">Retour</button>
+    </div>
+
+    <!-- Footer -->
+    <p class="ad-footer">
+      Si vous pensez qu'il s'agit d'une erreur, contactez votre administrateur.
+    </p>
+
+  </div>
+
+  <!-- Logo Poulina en bas -->
+  <div class="ad-brand" aria-label="Poulina Group Holding">
+    <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
+      <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
+      <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <span>Poulina Group Holding</span>
+  </div>
+
+</div>
