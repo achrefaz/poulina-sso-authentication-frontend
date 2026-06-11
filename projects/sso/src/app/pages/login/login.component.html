@@ -1,0 +1,144 @@
+<div class="auth-shell">
+
+  <!-- Panneau de marque -->
+  <aside class="brand-panel">
+    <div>
+      <app-logo [light]="true" />
+
+      <div class="brand-headline">
+        <h1>Portail d'accès<br>unifié SSO</h1>
+        <p>Connectez-vous une seule fois pour accéder à l'ensemble de vos plateformes professionnelles.</p>
+      </div>
+
+      <ul class="feature-list" aria-label="Fonctionnalités">
+        <li>
+          <span class="feat-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Authentification OAuth2 + PKCE
+        </li>
+        <li>
+          <span class="feat-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Double facteur (TOTP)
+        </li>
+        <li>
+          <span class="feat-icon" aria-hidden="true">
+            <svg viewBox="0 0 20 20" fill="none"><path d="M4 10l4 4 8-8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+          Session unifiée multi-plateformes
+        </li>
+      </ul>
+    </div>
+
+    <div class="brand-apps">
+      <p class="apps-label">Accès disponible pour</p>
+      <div class="apps-chips">
+        <span class="chip">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/><path d="M5 7h6M5 10h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          RH
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 12l3-4 3 3 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Finance
+        </span>
+        <span class="chip">
+          <svg viewBox="0 0 16 16" fill="none" aria-hidden="true"><rect x="2" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="2" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="2" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/><rect x="9" y="9" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.5"/></svg>
+          Dashboard
+        </span>
+      </div>
+    </div>
+
+    <footer class="brand-foot">© 2026 Poulina Group Holding — Tous droits réservés</footer>
+  </aside>
+
+  <!-- Panneau formulaire -->
+  <main class="form-panel">
+    <div class="form-card">
+
+      <div class="card-header">
+        <h2>Connexion</h2>
+        <p class="context">Accédez à votre espace professionnel</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-error" role="alert">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true" class="alert-icon">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          {{ errorMessage }}
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()" novalidate>
+
+        <div class="field">
+          <label for="email">Email professionnel</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M2 7l8 5 8-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              type="email"
+              id="email"
+              name="email"
+              [(ngModel)]="email"
+              placeholder="prenom.nom@poulina.com"
+              autocomplete="email"
+              [disabled]="isLoading"
+              required
+            />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrap">
+            <svg class="input-icon" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect x="4" y="9" width="12" height="9" rx="2" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M7 9V6a3 3 0 0 1 6 0v3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <input
+              [type]="showPassword ? 'text' : 'password'"
+              id="password"
+              name="password"
+              [(ngModel)]="password"
+              placeholder="••••••••"
+              autocomplete="current-password"
+              [disabled]="isLoading"
+              required
+            />
+            <button type="button" class="toggle-pwd" (click)="togglePassword()"
+                    [attr.aria-label]="showPassword ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+              @if (showPassword) {
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/><line x1="2" y1="2" x2="18" y2="18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              } @else {
+                <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M2 10s3-6 8-6 8 6 8 6-3 6-8 6-8-6-8-6z" stroke="currentColor" stroke-width="1.5"/><circle cx="10" cy="10" r="2.5" stroke="currentColor" stroke-width="1.5"/></svg>
+              }
+            </button>
+          </div>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading">
+          @if (isLoading) {
+            <span class="spinner" aria-hidden="true"></span>
+            Connexion en cours...
+          } @else {
+            Se connecter
+          }
+        </button>
+
+      </form>
+
+      <p class="help-text">
+        Problème de connexion ?
+        <a href="mailto:support.it@poulina.com">Contacter le support IT</a>
+      </p>
+
+    </div>
+  </main>
+
+</div>
