@@ -1,0 +1,62 @@
+<div class="auth-shell">
+
+  <aside class="brand-panel">
+    <app-logo [light]="true" />
+    <footer class="brand-foot">© 2025 Poulina Group Holding</footer>
+  </aside>
+
+  <main class="form-panel">
+    <div class="form-card">
+
+      <div class="status-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="4" y="8" width="40" height="30" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M4 14l20 13 20-13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="37" cy="37" r="9" fill="var(--accent)" stroke="var(--surface)" stroke-width="2"/>
+          <path d="M33 37l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+
+      <h2>Vérifiez votre messagerie</h2>
+      <p class="context">
+        Votre compte n'est pas encore activé. Un email de confirmation a été envoyé à
+        @if (email) {
+          <strong>{{ email }}</strong>
+        } @else {
+          votre adresse
+        }.
+      </p>
+
+      <div class="info-box">
+        <p>Cliquez sur le lien dans l'email pour activer votre compte. Le lien est valable <strong>24 heures</strong>.</p>
+      </div>
+
+      @if (sent) {
+        <div class="alert alert-success" role="status">
+          Email renvoyé avec succès. Vérifiez votre boîte de réception (et vos spams).
+        </div>
+      }
+
+      @if (errorMessage) {
+        <div class="alert alert-error" role="alert">{{ errorMessage }}</div>
+      }
+
+      @if (!sent) {
+        <button class="btn-primary" (click)="resend()" [disabled]="isSending">
+          @if (isSending) {
+            <span class="spinner" aria-hidden="true"></span>
+            Envoi en cours...
+          } @else {
+            Renvoyer le lien de confirmation
+          }
+        </button>
+      }
+
+      <button class="btn-secondary" (click)="backToLogin()">
+        ← Retour à la connexion
+      </button>
+
+    </div>
+  </main>
+
+</div>

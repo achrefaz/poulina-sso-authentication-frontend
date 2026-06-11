@@ -1,0 +1,76 @@
+<div class="auth-shell">
+
+  <aside class="brand-panel">
+    <app-logo [light]="true" />
+    <div class="brand-body">
+      <div class="mfa-icon" aria-hidden="true">
+        <svg viewBox="0 0 48 48" fill="none">
+          <rect x="8" y="20" width="32" height="22" rx="4" stroke="currentColor" stroke-width="2.5"/>
+          <path d="M15 20v-6a9 9 0 0 1 18 0v6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="24" cy="31" r="3" fill="currentColor"/>
+          <path d="M24 34v4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <h2>Vérification<br>en deux étapes</h2>
+      <p>Ouvrez votre application d'authentification et saisissez le code à 6 chiffres affiché pour Poulina SSO.</p>
+    </div>
+    <footer class="brand-foot">© 2025 Poulina Group Holding</footer>
+  </aside>
+
+  <main class="form-panel">
+    <div class="form-card">
+
+      <div class="card-header">
+        <div class="step-badge">Étape 2 sur 2</div>
+        <h2>Code d'authentification</h2>
+        <p class="context">Saisissez le code à 6 chiffres de votre application TOTP.</p>
+      </div>
+
+      @if (errorMessage) {
+        <div class="alert alert-error" role="alert">
+          <svg viewBox="0 0 20 20" fill="none" class="alert-icon" aria-hidden="true">
+            <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          {{ errorMessage }}
+        </div>
+      }
+
+      <form (ngSubmit)="onSubmit()" novalidate>
+        <div class="field">
+          <label for="otp-code">Code TOTP</label>
+          <input
+            type="text"
+            id="otp-code"
+            name="otpCode"
+            inputmode="numeric"
+            autocomplete="one-time-code"
+            placeholder="000000"
+            maxlength="6"
+            [(ngModel)]="code"
+            (input)="onCodeInput($event)"
+            [disabled]="isLoading"
+            class="otp-input"
+          />
+          <span class="field-hint">Le code expire dans 30 secondes.</span>
+        </div>
+
+        <button type="submit" class="btn-primary" [disabled]="isLoading || code.length < 6">
+          @if (isLoading) {
+            <span class="spinner" aria-hidden="true"></span>
+            Vérification...
+          } @else {
+            Confirmer
+          }
+        </button>
+      </form>
+
+      <p class="help-text">
+        Vous n'avez plus accès à votre application ?
+        <a href="mailto:support.it@poulina.com">Contacter le support IT</a>
+      </p>
+
+    </div>
+  </main>
+
+</div>

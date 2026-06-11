@@ -1,1 +1,24 @@
 /* You can add global styles to this file, and also import other style files */
+:root {
+  --poulina-primary: #1a3a5c;
+  --poulina-accent: #0066cc;
+  --poulina-bg: #f4f7fa;
+  --poulina-text: #1f2937;
+  --poulina-error: #dc2626;
+  --poulina-success: #10b981;
+  --poulina-warning: #f59e0b;
+}
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', 'Roboto', sans-serif;
+  background-color: var(--poulina-bg);
+  color: var(--poulina-text);
+}

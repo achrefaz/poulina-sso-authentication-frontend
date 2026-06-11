@@ -1,0 +1,48 @@
+<div class="auth-shell">
+
+  <aside class="brand-panel">
+    <app-logo [light]="true" />
+    <footer class="brand-foot">© 2025 Poulina Group Holding</footer>
+  </aside>
+
+  <main class="form-panel">
+    <div class="form-card">
+
+      @if (status === 'loading') {
+        <div class="state-icon loading" aria-label="Vérification en cours">
+          <span class="spinner-lg" aria-hidden="true"></span>
+        </div>
+        <h2>Vérification en cours…</h2>
+        <p class="context">Validation de votre lien de confirmation.</p>
+      }
+
+      @if (status === 'success') {
+        <div class="state-icon success" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M14 24l7 7 13-13" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h2>Email confirmé !</h2>
+        <p class="context">{{ message }}</p>
+        <p class="context">Vous pouvez maintenant vous connecter à vos plateformes Poulina.</p>
+        <button class="btn-primary" (click)="goToLogin()">Accéder à la connexion</button>
+      }
+
+      @if (status === 'error') {
+        <div class="state-icon error" aria-hidden="true">
+          <svg viewBox="0 0 48 48" fill="none">
+            <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2.5"/>
+            <path d="M16 16l16 16M32 16L16 32" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h2>Lien invalide</h2>
+        <p class="context">{{ message }}</p>
+        <p class="context secondary">Si votre lien a expiré, retournez à la connexion et cliquez sur "Renvoyer le lien".</p>
+        <button class="btn-primary" (click)="goToLogin()">Retour à la connexion</button>
+      }
+
+    </div>
+  </main>
+
+</div>

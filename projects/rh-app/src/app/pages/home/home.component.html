@@ -1,0 +1,262 @@
+<div class="app-shell">
+
+  <!-- Topbar -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">
+          <svg viewBox="0 0 32 32" fill="none">
+            <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
+            <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <div>
+          <span class="brand-name">Poulina</span>
+          <span class="brand-module">Plateforme RH</span>
+        </div>
+      </div>
+    </div>
+
+    <nav class="topbar-nav" aria-label="Navigation principale">
+      <a href="#" class="nav-link active">Tableau de bord</a>
+      <a href="#" class="nav-link">Employés</a>
+      <a href="#" class="nav-link">Paie</a>
+      <a href="#" class="nav-link">Congés</a>
+    </nav>
+
+    <div class="topbar-right">
+      @if (userInfo) {
+        <div class="user-pill">
+          <div class="avatar" aria-hidden="true">{{ initials }}</div>
+          <div class="user-info">
+            <span class="user-name">{{ userInfo.given_name }} {{ userInfo.family_name }}</span>
+            <span class="user-role">{{ userInfo.roles[0] || 'Utilisateur' }}</span>
+          </div>
+          <button class="logout-btn" (click)="logout()" [disabled]="isLoggingOut" aria-label="Se déconnecter">
+            <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <path d="M13 7l3 3-3 3M16 10H8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              <path d="M10 3H5a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+          </button>
+        </div>
+      }
+    </div>
+  </header>
+
+  <main class="main">
+
+    <!-- En-tête -->
+    <div class="page-header">
+      @if (userInfo) {
+        <div>
+          <h1>Bonjour, {{ userInfo.given_name }} 👋</h1>
+          <p class="page-sub">Voici votre tableau de bord RH — {{ today }}</p>
+        </div>
+      }
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon blue" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><p class="stat-label">Employés actifs</p><p class="stat-value">247</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon green" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+        </div>
+        <div><p class="stat-label">Congés en attente</p><p class="stat-value">12</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon amber" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><p class="stat-label">Recrutements ouverts</p><p class="stat-value">5</p></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon purple" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div><p class="stat-label">Formations ce mois</p><p class="stat-value">8</p></div>
+      </div>
+    </div>
+
+    <!-- Modules -->
+    <div class="section-header"><h2>Modules disponibles</h2></div>
+    <div class="modules-grid">
+      <button class="module-card" type="button">
+        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg></div>
+        <div class="module-body"><h3>Gestion des employés</h3><p>Consulter et gérer les dossiers</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button">
+        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Paie</h3><p>Salaires et bulletins de paie</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button">
+        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Congés & absences</h3><p>Gestion des demandes de congés</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button">
+        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-body"><h3>Recrutement</h3><p>Suivi des candidatures</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+    </div>
+
+    <!-- Profil + MFA -->
+    @if (userInfo) {
+      <div class="info-section">
+
+        <div class="info-section-header">
+          <h2>Votre profil</h2>
+        </div>
+
+        <!-- Infos -->
+        <div class="info-grid">
+          <div class="info-row">
+            <span class="info-label">Email</span>
+            <span class="info-value">{{ userInfo.email }}</span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Statut</span>
+            <span class="info-value">
+              <span class="status-dot active" aria-hidden="true"></span>
+              {{ userInfo.statut }}
+            </span>
+          </div>
+          <div class="info-row">
+            <span class="info-label">Rôles</span>
+            <span class="info-value roles">
+              @for (role of userInfo.roles; track role) {
+                <span class="role-badge">{{ role }}</span>
+              }
+            </span>
+          </div>
+        </div>
+
+        <!-- Séparateur MFA -->
+        <div class="mfa-section">
+          <div class="mfa-header">
+            <div class="mfa-title-row">
+              <div class="mfa-icon-wrap" [class.active]="mfaEnabled" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none">
+                  <rect x="5" y="11" width="14" height="11" rx="2" stroke="currentColor" stroke-width="1.5"/>
+                  <path d="M8 11V7a4 4 0 0 1 8 0v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <circle cx="12" cy="16" r="1.5" fill="currentColor"/>
+                </svg>
+              </div>
+              <div>
+                <p class="mfa-title">Double authentification (MFA)</p>
+                <p class="mfa-sub">
+                  @if (mfaEnabled) {
+                    <span class="badge-on">Activé</span> Votre compte est protégé par un code TOTP.
+                  } @else {
+                    <span class="badge-off">Désactivé</span> Renforcez la sécurité de votre compte.
+                  }
+                </p>
+              </div>
+            </div>
+
+            <!-- Boutons principaux (idle) -->
+            @if (mfaStep === 'idle') {
+              @if (!mfaEnabled) {
+                <button class="btn-mfa-enable" (click)="startMfaSetup()" [disabled]="mfaLoading">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Activer le MFA
+                </button>
+              } @else {
+                <button class="btn-mfa-disable" (click)="startMfaDisable()">
+                  Désactiver le MFA
+                </button>
+              }
+            }
+          </div>
+
+          <!-- Message succès -->
+          @if (mfaSuccess) {
+            <div class="alert-success" role="status">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M6.5 10l2.5 2.5 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              {{ mfaSuccess }}
+            </div>
+          }
+
+          <!-- Message erreur -->
+          @if (mfaError) {
+            <div class="alert-error" role="alert">
+              <svg viewBox="0 0 20 20" fill="none" aria-hidden="true"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+              {{ mfaError }}
+            </div>
+          }
+
+          <!-- Étape QR code -->
+          @if (mfaStep === 'qr') {
+            <div class="mfa-box">
+              <p class="mfa-instruction">
+                <strong>Étape 1</strong> — Scannez ce QR code avec <strong>Google Authenticator</strong> ou <strong>Authy</strong>.
+              </p>
+              <div class="qr-wrapper">
+                <img [src]="qrCodeBase64" alt="QR Code MFA" class="qr-img" />
+              </div>
+              <p class="mfa-manual">
+                Vous ne pouvez pas scanner ?
+                Saisissez manuellement : <code>{{ manualSecret }}</code>
+              </p>
+              <div class="mfa-divider"></div>
+              <p class="mfa-instruction">
+                <strong>Étape 2</strong> — Entrez le code à 6 chiffres affiché dans votre application.
+              </p>
+              <input
+                type="text"
+                inputmode="numeric"
+                placeholder="000000"
+                maxlength="6"
+                [value]="setupCode"
+                (input)="onCodeInput($event, 'setup')"
+                class="otp-input"
+                [disabled]="mfaLoading"
+              />
+              <div class="mfa-actions">
+                <button class="btn-cancel" (click)="cancelMfa()" [disabled]="mfaLoading">Annuler</button>
+                <button class="btn-confirm" (click)="confirmMfaSetup()" [disabled]="mfaLoading || setupCode.length < 6">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Confirmer l'activation
+                </button>
+              </div>
+            </div>
+          }
+
+          <!-- Étape désactivation -->
+          @if (mfaStep === 'disable') {
+            <div class="mfa-box warning">
+              <p class="mfa-instruction">
+                Entrez le code TOTP de votre application pour <strong>désactiver</strong> le MFA.
+              </p>
+              <input
+                type="text"
+                inputmode="numeric"
+                placeholder="000000"
+                maxlength="6"
+                [value]="disableCode"
+                (input)="onCodeInput($event, 'disable')"
+                class="otp-input"
+                [disabled]="mfaLoading"
+              />
+              <div class="mfa-actions">
+                <button class="btn-cancel" (click)="cancelMfa()" [disabled]="mfaLoading">Annuler</button>
+                <button class="btn-danger" (click)="confirmMfaDisable()" [disabled]="mfaLoading || disableCode.length < 6">
+                  @if (mfaLoading) { <span class="spinner-sm"></span> } Désactiver le MFA
+                </button>
+              </div>
+            </div>
+          }
+
+        </div>
+      </div>
+    }
+
+  </main>
+</div>
