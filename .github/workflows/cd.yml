@@ -4,15 +4,6 @@ on:
   push:
     branches: [ main ]
   workflow_dispatch:
-    inputs:
-      environment:
-        description: 'Environment to deploy to'
-        required: true
-        default: 'production'
-        type: choice
-        options:
-          - production
-          - staging
 
 env:
   DOCKER_REGISTRY: docker.io
@@ -21,7 +12,7 @@ env:
 
 jobs:
   docker-build:
-    name: Build Docker Image
+    name: Build and Push Docker Image
     runs-on: ubuntu-latest
 
     steps:
@@ -78,133 +69,7 @@ jobs:
             VERSION=${{ github.sha }}
             SOURCE_COMMIT=${{ github.sha }}
 
-  deploy:
-    name: Deploy to ${{ github.event.inputs.environment || 'production' }}
-    runs-on: ubuntu-latest
-    needs: docker-build
-    if: github.ref == 'refs/heads/main'
-
-    steps:
-      - name: Deploy via SSH
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          port: ${{ secrets.DEPLOY_PORT || 22 }}
-          script: |
-            CONTAINER_NAME="poulina-sso-frontend"
-            IMAGE_NAME="${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest"
-
-            echo "Starting deployment to ${{ github.event.inputs.environment || 'production' }}..."
-
-            docker pull $IMAGE_NAME
-
-            docker stop $CONTAINER_NAME || true
-            docker rm $CONTAINER_NAME || true
-
-            docker image prune -f
-
-            docker run -d \
-              --name $CONTAINER_NAME \
-              -p 80:80 \
-              --restart unless-stopped \
-              --network poulina-network \
-              --log-driver json-file \
-              --log-opt max-size=10m \
-              --log-opt max-file=3 \
-              -e TZ=Europe/Paris \
-              $IMAGE_NAME
-
-            sleep 5
-
-            if docker ps | grep -q $CONTAINER_NAME; then
-              echo "Container is running"
-              docker ps | grep $CONTAINER_NAME
-            else
-              echo "Container failed to start"
-              docker logs $CONTAINER_NAME --tail 50
-              exit 1
-            fi
-
-            echo "Deployment complete"
-
-  health-check:
-    name: Health Check
-    runs-on: ubuntu-latest
-    needs: deploy
-    if: always()
-
-    steps:
-      - name: Health check
-        uses: jtalk/url-health-check-action@v4
-        with:
-          url: ${{ secrets.DEPLOY_URL || 'http://localhost' }}
-          max-attempts: 10
-          retry-delay: 5s
-          follow-redirect: true
-
-  notify:
-    name: Notification
-    runs-on: ubuntu-latest
-    needs: [docker-build, deploy, health-check]
-    if: always()
-
-    steps:
-      - name: Send Slack notification
-        uses: slackapi/slack-github-action@v1.26.0
-        with:
-          payload: |
-            {
-              "text": "Deployment ${{ needs.deploy.result == 'success' && 'SUCCESS' || 'FAILED' }}",
-              "blocks": [
-                {
-                  "type": "section",
-                  "text": {
-                    "type": "mrkdwn",
-                    "text": "*${{ needs.deploy.result == 'success' && 'Deployment Successful' || 'Deployment Failed' }}*"
-                  }
-                },
-                {
-                  "type": "section",
-                  "fields": [
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Environment:*\n${{ github.event.inputs.environment || 'production' }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Commit:*\n<https://github.com/${{ github.repository }}/commit/${{ github.sha }}|${{ github.sha }}>"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Author:*\n${{ github.actor }}"
-                    },
-                    {
-                      "type": "mrkdwn",
-                      "text": "*Status:*\n${{ needs.deploy.result == 'success' && 'Success' : 'Failed' }}"
-                    }
-                  ]
-                }
-              ]
-            }
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        continue-on-error: true
-
-      - name: GitHub deployment status
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const success = '${{ needs.health-check.result }}' === 'success';
-            const status = success ? 'success' : 'failure';
-
-            await github.rest.repos.createDeploymentStatus({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              deployment_id: context.payload.deployment?.id || 0,
-              state: status,
-              environment: '${{ github.event.inputs.environment || 'production' }}',
-              target_url: '${{ secrets.DEPLOY_URL || 'http://localhost' }}',
-              description: success ? 'Deployment successful' : 'Deployment failed',
-            });
+      - name: Summary
+        run: |
+          echo "### Image pushed to Docker Hub :whale:" >> $GITHUB_STEP_SUMMARY
+          echo "\`${{ secrets.DOCKER_USERNAME }}/${{ env.DOCKER_IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
