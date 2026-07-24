@@ -74,7 +74,7 @@ jobs:
         run: npm ci --legacy-peer-deps
 
       - name: Build shared-auth library
-        run: npm run build:shared-auth
+        run: npm run build:shared
 
       - name: Build SSO
         run: npm run build:sso
