@@ -9,6 +9,11 @@ on:
 env:
   NODE_VERSION: 20
 
+permissions:
+  contents: read
+  pull-requests: write
+  issues: write
+
 jobs:
   lint:
     name: Lint
@@ -67,6 +72,9 @@ jobs:
 
       - name: Install dependencies
         run: npm ci --legacy-peer-deps
+
+      - name: Build shared-auth library
+        run: npm run build:shared-auth
 
       - name: Build SSO
         run: npm run build:sso
