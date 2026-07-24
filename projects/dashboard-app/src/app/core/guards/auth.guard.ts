@@ -1,46 +1,63 @@
 import { inject } from '@angular/core';
 import { CanActivateFn, Router } from '@angular/router';
 import { TokenStore } from 'shared-auth';
-import { AuthService } from '../services/auth.service';
+import { AuthService, type RefreshError } from '../services/auth.service';
 import { firstValueFrom } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
-const SSO_URL = 'http://localhost:4200';
+const SSO_URL = environment.ssoUrl;
+
+// const SSO_URL = 'http://localhost:4200';
 const CLIENT_ID = 'dashboard-client';
-const ALLOWED_ROLES: string[] = ['DIRECTION', 'ADMIN'];
-
+const ALLOWED_ROLES = ['DIRECTION', 'ADMIN'];
 const ROLE_CLAIM = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
-export const authGuard: CanActivateFn = async () => {
+export const authGuard: CanActivateFn = async (route) => {
   const store = inject(TokenStore);
   const service = inject(AuthService);
+  const router = inject(Router);
+
+  const ssoRoles = route.queryParams['sso_roles'] as string | undefined;
+
+  function cleanUrlTree() {
+    const { sso_roles, ...rest } = route.queryParams;
+    return router.createUrlTree([route.routeConfig?.path ? `/${route.routeConfig.path}` : '/'], {
+      queryParams: rest,
+    });
+  }
 
   if (store.isAuthenticated()) {
-    if (hasAllowedRole(store)) return true;
-    redirectAccessDenied(store);
+    const roles = getRolesFromToken(store);
+    if (hasAllowedRole(roles)) {
+      return ssoRoles ? cleanUrlTree() : true;
+    }
+    redirectAccessDenied();
     return false;
   }
 
   try {
     await firstValueFrom(service.refresh());
+    const roles = getRolesFromToken(store);
+    if (hasAllowedRole(roles)) {
+      return ssoRoles ? cleanUrlTree() : true;
+    }
 
-    if (hasAllowedRole(store)) return true;
-
-    redirectAccessDenied(store);
+    redirectAccessDenied();
     return false;
-  } catch (err: any) {
-    const message: string = err?.error?.message ?? '';
+  } catch (error) {
+    const refreshError = error as RefreshError;
 
-    if (message.includes('rôle insuffisant') || message.includes('Accès refusé')) {
-      redirectAccessDenied(store);
+    if (refreshError.status === 403 && refreshError.errorCode === 'ROLE_INSUFFICIENT') {
+      redirectAccessDenied();
       return false;
     }
 
-    await service.redirectToSso();
+    service.redirectToSso();
     return false;
   }
 };
 
-function getRoles(store: TokenStore): string[] {
+function getRolesFromToken(store: TokenStore): string[] {
   const payload = store.decode();
   if (!payload) return [];
   const claim = payload[ROLE_CLAIM] ?? payload['role'] ?? payload['roles'];
@@ -49,19 +66,11 @@ function getRoles(store: TokenStore): string[] {
   return [];
 }
 
-function hasAllowedRole(store: TokenStore): boolean {
-  if (ALLOWED_ROLES.length === 0) return true;
-  const tokenRoles = getRoles(store);
-  return tokenRoles.some((r) => ALLOWED_ROLES.includes(r));
+function hasAllowedRole(roles: string[]): boolean {
+  return roles.some((r) => ALLOWED_ROLES.includes(r));
 }
 
-function redirectAccessDenied(store: TokenStore): void {
-  const roles = getRoles(store);
-  const userRole = roles[0] ?? '';
-
-  const params = new URLSearchParams({
-    clientId: CLIENT_ID,
-    ...(userRole ? { userRole } : {}),
-  });
+function redirectAccessDenied(): void {
+  const params = new URLSearchParams({ clientId: CLIENT_ID });
   window.location.href = `${SSO_URL}/access-denied?${params.toString()}`;
 }

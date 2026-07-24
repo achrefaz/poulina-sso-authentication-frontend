@@ -8,15 +8,25 @@ export interface OAuthParams {
   codeChallengeMethod: string;
 }
 
-export interface LoginResponse {
+export interface LoginDirectResponse {
   accessToken?: string;
   expiresIn?: number;
   tokenType?: string;
   userId?: string;
-  passwordChangeRequired?: boolean;
+  roles?: string[];
   mfaRequired?: boolean;
   mfaPendingToken?: string;
+  passwordChangeRequired?: boolean;
+  emailVerified?: boolean;
   message?: string;
+}
+
+export interface MfaVerifyResponse {
+  accessToken: string;
+  expiresIn: number;
+  tokenType: string;
+  roles: string[];
+  userId: string;
 }
 
 export interface ApiError {
@@ -25,19 +35,6 @@ export interface ApiError {
   raison?: string;
   error?: string;
   error_description?: string;
-}
-
-export interface LoginWithCodeResponse {
-  authorizationCode: string;
-  redirectUri: string;
-}
-
-export interface MfaVerifyResponse {
-  accessToken: string;
-  expiresIn: number;
-  tokenType: string;
-  userId: string;
-  passwordChangeRequired?: boolean;
 }
 
 export interface TokenResponse {
@@ -64,4 +61,12 @@ export interface UserInfo {
   email_verified: boolean;
   pwd_change_required: boolean;
   mfa_enabled: boolean;
+}
+
+export interface ForgotPasswordResponse {
+  message: string;
+}
+
+export interface ResetPasswordResponse {
+  message: string;
 }

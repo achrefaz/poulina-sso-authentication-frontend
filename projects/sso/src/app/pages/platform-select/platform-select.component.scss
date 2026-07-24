@@ -1,0 +1,199 @@
+// ── Layout auth-shell (identique aux autres pages SSO) ────────────────────────
+
+.auth-shell {
+  display:   flex;
+  min-height: 100vh;
+}
+
+// ── Brand panel (gauche) ──────────────────────────────────────────────────────
+
+.brand-panel {
+  width:           420px;
+  flex-shrink:     0;
+  background:      linear-gradient(160deg, #1a3a5c 0%, #0f2540 100%);
+  color:           #fff;
+  padding:         48px 40px;
+  display:         flex;
+  flex-direction:  column;
+  justify-content: space-between;
+  gap:             32px;
+}
+
+.brand-headline {
+  margin-top: 40px;
+
+  h1 {
+    font-size:   2rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin:      0 0 12px;
+    color:       #fff;
+  }
+
+  p {
+    font-size:   0.95rem;
+    color:       rgba(255, 255, 255, 0.75);
+    line-height: 1.6;
+    margin:      0;
+  }
+}
+
+.brand-foot {
+  font-size: 0.75rem;
+  color:     rgba(255, 255, 255, 0.45);
+}
+
+// ── Form panel (droite) ───────────────────────────────────────────────────────
+
+.form-panel {
+  flex:            1;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+  padding:         40px 24px;
+  background:      var(--bg, #f4f7fa);
+}
+
+.form-card {
+  background:    #fff;
+  border-radius: 16px;
+  padding:       40px;
+  width:         100%;
+  max-width:     520px;
+  box-shadow:    0 4px 24px rgba(0, 0, 0, 0.07);
+}
+
+.card-header {
+  margin-bottom: 28px;
+
+  h2 {
+    font-size:   1.5rem;
+    font-weight: 700;
+    color:       #1a3a5c;
+    margin:      0 0 6px;
+  }
+
+  .context {
+    font-size: 0.9rem;
+    color:     var(--text-muted, #64748b);
+    margin:    0;
+  }
+}
+
+// ── Grille des plateformes ────────────────────────────────────────────────────
+
+.platforms-grid {
+  display:        flex;
+  flex-direction: column;
+  gap:            12px;
+}
+
+.platform-tile {
+  display:       flex;
+  align-items:   center;
+  gap:           16px;
+  padding:       18px 20px;
+  background:    #fff;
+  border:        1.5px solid #e2e8f0;
+  border-radius: 12px;
+  cursor:        pointer;
+  text-align:    left;
+  transition:    border-color 0.18s, box-shadow 0.18s, transform 0.12s;
+  width:         100%;
+
+  &:hover {
+    border-color: #0066cc;
+    box-shadow:   0 4px 16px rgba(0, 102, 204, 0.12);
+    transform:    translateY(-1px);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+.tile-icon {
+  flex-shrink:     0;
+  width:           48px;
+  height:          48px;
+  border-radius:   12px;
+  display:         flex;
+  align-items:     center;
+  justify-content: center;
+
+  svg {
+    width:  24px;
+    height: 24px;
+  }
+
+  &--rh {
+    background: #eff6ff;
+    color:      #1d4ed8;
+  }
+
+  &--finance {
+    background: #f0fdf4;
+    color:      #16a34a;
+  }
+
+  &--dashboard {
+    background: #faf5ff;
+    color:      #7c3aed;
+  }
+}
+
+.tile-body {
+  flex:           1;
+  display:        flex;
+  flex-direction: column;
+  gap:            3px;
+}
+
+.tile-name {
+  font-size:   15px;
+  font-weight: 600;
+  color:       #1a3a5c;
+}
+
+.tile-desc {
+  font-size:   13px;
+  color:       #64748b;
+  line-height: 1.4;
+}
+
+.tile-arrow {
+  flex-shrink: 0;
+  width:       20px;
+  height:      20px;
+  color:       #cbd5e1;
+  transition:  color 0.18s;
+
+  .platform-tile:hover & {
+    color: #0066cc;
+  }
+}
+
+// ── Responsive ────────────────────────────────────────────────────────────────
+
+@media (max-width: 768px) {
+  .auth-shell {
+    flex-direction: column;
+  }
+
+  .brand-panel {
+    width:   100%;
+    padding: 32px 24px;
+
+    .brand-headline h1 {
+      font-size: 1.5rem;
+    }
+  }
+
+  .form-panel {
+    padding: 24px 16px;
+  }
+
+  .form-card {
+    padding: 28px 20px;
+  }
+}

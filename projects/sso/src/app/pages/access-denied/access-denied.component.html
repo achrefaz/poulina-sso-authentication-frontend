@@ -2,7 +2,6 @@
 
   <div class="ad-card">
 
-    <!-- Icône -->
     <div class="ad-icon-wrap" aria-hidden="true">
       <svg viewBox="0 0 48 48" fill="none">
         <circle cx="24" cy="24" r="22" stroke="currentColor" stroke-width="2.5"/>
@@ -11,16 +10,13 @@
       </svg>
     </div>
 
-    <!-- Titre -->
     <h1 class="ad-title">Accès refusé</h1>
 
-    <!-- Message principal -->
     <p class="ad-msg">
       Vous n'avez pas les droits nécessaires pour accéder à
       <strong>{{ platformLabel }}</strong>.
     </p>
 
-    <!-- Rôles requis -->
     @if (requiredRoles.length > 0) {
       <div class="ad-roles-box">
         <p class="ad-roles-label">
@@ -28,7 +24,7 @@
             <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
             <path d="M10 6v4M10 13h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
           </svg>
-          Cette plateforme est réservée aux rôles suivants :
+          Cette plateforme est réservée aux rôles :
         </p>
         <div class="ad-roles-list">
           @for (role of requiredRoles; track role) {
@@ -38,34 +34,45 @@
       </div>
     }
 
-    <!-- Rôle actuel si connu -->
-    @if (userRole) {
+    @if (userRoles.length > 0) {
       <p class="ad-current-role">
-        Votre rôle actuel : <span class="ad-role-badge current">{{ userRole }}</span>
+        Vos rôles :
+        @for (role of userRoles; track role) {
+          <span class="ad-role-badge current">{{ role }}</span>
+        }
       </p>
     }
 
-    <!-- Actions -->
     <div class="ad-actions">
-      @if (userRole) {
-        <button class="ad-btn primary" (click)="goToLogin()">
+
+      @if (accessiblePlatforms.length === 1) {
+        <button class="ad-btn primary" (click)="goToPlatform(accessiblePlatforms[0].url)">
           <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
             <path d="M10 17l-7-7 7-7M3 10h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-          Aller à ma plateforme
+          Retour à {{ accessiblePlatforms[0].label }}
+        </button>
+      } @else if (accessiblePlatforms.length > 1) {
+        <button class="ad-btn primary" (click)="goBack()">
+          <svg viewBox="0 0 20 20" fill="none" aria-hidden="true">
+            <path d="M10 17l-7-7 7-7M3 10h14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          Choisir ma plateforme
         </button>
       }
-      <button class="ad-btn secondary" (click)="goBack()">Retour</button>
+
+      <button class="ad-btn secondary" (click)="goToLogin()">
+        Se connecter avec un autre compte
+      </button>
+
     </div>
 
-    <!-- Footer -->
     <p class="ad-footer">
       Si vous pensez qu'il s'agit d'une erreur, contactez votre administrateur.
     </p>
 
   </div>
 
-  <!-- Logo Poulina en bas -->
   <div class="ad-brand" aria-label="Poulina Group Holding">
     <svg viewBox="0 0 32 32" fill="none" aria-hidden="true">
       <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>

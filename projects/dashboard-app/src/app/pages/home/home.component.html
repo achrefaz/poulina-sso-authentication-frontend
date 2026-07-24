@@ -107,10 +107,20 @@
         <div class="module-body"><h3>Gestion des utilisateurs</h3><p>Créer, gérer et bloquer les comptes</p></div>
         <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
+      <button class="module-card" type="button" (click)="isAdmin && openAuditLogs()">
+        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><rect x="9" y="3" width="6" height="4" rx="1" stroke="currentColor" stroke-width="1.5"/><path d="M9 12h6M9 16h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
+        <div class="module-body"><h3>Audit Logs</h3><p>Historique des actions et événements</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="module-card" type="button" (click)="isAdmin && openSessions()">
+        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z" stroke="currentColor" stroke-width="1.5"/><path d="M2 20c0-4 3.6-7 8-7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="18" cy="18" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M18 16v2l1 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+        <div class="module-body"><h3>Sessions actives</h3><p>Surveiller et révoquer les sessions</p></div>
+        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
     </div>
 
     <!-- ══════════════════════════════════════════════════════════════════════
-         GESTION DES UTILISATEURS (ADMIN uniquement)
+         SECTION ADMIN
     ════════════════════════════════════════════════════════════════════════ -->
     @if (isAdmin && adminView !== 'none') {
       <div class="admin-section">
@@ -118,19 +128,21 @@
         <!-- Header avec tabs -->
         <div class="admin-header">
           <div class="admin-tabs">
-            <button
-              class="admin-tab"
-              [class.active]="adminView === 'list'"
-              (click)="openUserList()">
+            <button class="admin-tab" [class.active]="adminView === 'list'" (click)="openUserList()">
               <svg viewBox="0 0 20 20" fill="none"><path d="M3 5h14M3 10h14M3 15h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Liste des utilisateurs
             </button>
-            <button
-              class="admin-tab"
-              [class.active]="adminView === 'create'"
-              (click)="openCreateUser()">
+            <button class="admin-tab" [class.active]="adminView === 'create'" (click)="openCreateUser()">
               <svg viewBox="0 0 20 20" fill="none"><path d="M10 4v12M4 10h12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
               Créer un utilisateur
+            </button>
+            <button class="admin-tab" [class.active]="adminView === 'audit'" (click)="openAuditLogs()">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M5 4h10M5 8h10M5 12h6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Audit Logs
+            </button>
+            <button class="admin-tab" [class.active]="adminView === 'sessions'" (click)="openSessions()">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="6" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M4 18c0-3 2.7-5 6-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="15" cy="15" r="3" stroke="currentColor" stroke-width="1.5"/><path d="M15 13.5v1.5l1 1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+              Sessions
             </button>
           </div>
           <button class="admin-close" (click)="closeAdmin()" aria-label="Fermer">
@@ -138,9 +150,8 @@
           </button>
         </div>
 
-        <!-- ── Vue liste ─────────────────────────────────────────────────── -->
+        <!-- ── Vue liste utilisateurs ──────────────────────────────────────── -->
         @if (adminView === 'list') {
-
           <div class="admin-toolbar">
             <button class="btn-refresh" (click)="loadUsers()" [disabled]="usersLoading">
               <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 1 0 1.2-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -152,14 +163,10 @@
             </button>
           </div>
 
-          @if (usersError) {
-            <div class="alert-error">{{ usersError }}</div>
-          }
+          @if (usersError) { <div class="alert-error" style="margin: 0 24px 16px;">{{ usersError }}</div> }
 
           @if (usersLoading) {
-            <div class="users-loading">
-              <span class="spinner-sm"></span> Chargement…
-            </div>
+            <div class="users-loading"><span class="spinner-sm"></span> Chargement…</div>
           }
 
           @if (!usersLoading && users.length > 0) {
@@ -190,15 +197,11 @@
                           @for (role of user.roles; track role.id) {
                             <span class="role-badge-sm">{{ role.nom }}</span>
                           }
-                          @if (user.roles.length === 0) {
-                            <span class="no-role">—</span>
-                          }
+                          @if (user.roles.length === 0) { <span class="no-role">—</span> }
                         </div>
                       </td>
                       <td>
-                        <span class="status-badge" [class]="user.statut.toLowerCase()">
-                          {{ user.statut }}
-                        </span>
+                        <span class="status-badge" [class]="user.statut.toLowerCase()">{{ user.statut }}</span>
                       </td>
                       <td>
                         @if (user.emailVerifie) {
@@ -209,34 +212,24 @@
                       </td>
                       <td>
                         @if (blockingUserId === user.id) {
-                          <!-- Formulaire de blocage inline -->
                           <div class="block-form">
-                            <input
-                              type="text"
-                              class="block-input"
-                              placeholder="Raison du blocage…"
-                              [(ngModel)]="blockRaison"
-                            />
-                            @if (blockError) {
-                              <p class="block-error">{{ blockError }}</p>
-                            }
+                            <input type="text" class="block-input" placeholder="Raison du blocage…" [(ngModel)]="blockRaison" />
+                            @if (blockError) { <p class="block-error">{{ blockError }}</p> }
                             <div class="block-actions">
-                              <button class="btn-block-confirm" (click)="confirmBlock(user)" [disabled]="blockLoading">
-                                Confirmer
-                              </button>
+                              <button class="btn-block-confirm" (click)="confirmBlock(user)" [disabled]="blockLoading">Confirmer</button>
                               <button class="btn-block-cancel" (click)="cancelBlock()">Annuler</button>
                             </div>
                           </div>
                         } @else {
                           <div class="action-btns">
                             @if (user.statut === 'ACTIF') {
-                              <button class="btn-action danger" (click)="startBlock(user.id)" title="Bloquer">
+                              <button class="btn-action danger" (click)="startBlock(user.id)">
                                 <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M5 10h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
                                 Bloquer
                               </button>
                             }
                             @if (user.statut === 'BLOQUE') {
-                              <button class="btn-action success" (click)="debloquer(user)" title="Débloquer">
+                              <button class="btn-action success" (click)="debloquer(user)">
                                 <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7" stroke="currentColor" stroke-width="1.5"/><path d="M7 10l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                                 Débloquer
                               </button>
@@ -269,10 +262,7 @@
                 {{ createSuccess }}
               </div>
             }
-
-            @if (createError) {
-              <div class="alert-error">{{ createError }}</div>
-            }
+            @if (createError) { <div class="alert-error">{{ createError }}</div> }
 
             <div class="form-grid">
               <div class="form-group">
@@ -294,17 +284,12 @@
               </div>
             </div>
 
-            <!-- Sélection des rôles -->
             <div class="form-group full">
               <label class="form-label">Rôles assignés</label>
               @if (roles.length > 0) {
                 <div class="roles-picker">
                   @for (role of roles; track role.id) {
-                    <button
-                      type="button"
-                      class="role-toggle"
-                      [class.selected]="isRoleSelected(role.id)"
-                      (click)="toggleRole(role.id)">
+                    <button type="button" class="role-toggle" [class.selected]="isRoleSelected(role.id)" (click)="toggleRole(role.id)">
                       <svg viewBox="0 0 20 20" fill="none" class="role-check">
                         <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.5"/>
                         @if (isRoleSelected(role.id)) {
@@ -312,15 +297,36 @@
                         }
                       </svg>
                       <span class="role-nom">{{ role.nom }}</span>
-                      @if (role.description) {
-                        <span class="role-desc">{{ role.description }}</span>
-                      }
+                      @if (role.description) { <span class="role-desc">{{ role.description }}</span> }
                     </button>
                   }
                 </div>
               } @else {
                 <p class="form-hint">Chargement des rôles…</p>
               }
+            </div>
+
+            <!-- ── Notice emails automatiques ──────────────────────────────── -->
+            <div class="email-notice">
+              <div class="email-notice-icon" aria-hidden="true">
+                <svg viewBox="0 0 20 20" fill="none">
+                  <path d="M2 5.5A1.5 1.5 0 0 1 3.5 4h13A1.5 1.5 0 0 1 18 5.5v9a1.5 1.5 0 0 1-1.5 1.5h-13A1.5 1.5 0 0 1 2 14.5v-9z" stroke="currentColor" stroke-width="1.4"/>
+                  <path d="M2 6l8 5 8-5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+              <div class="email-notice-body">
+                <p class="email-notice-title">Deux emails seront envoyés automatiquement</p>
+                <ul class="email-notice-list">
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2 2 4-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span><strong>Identifiants</strong> — email et mot de passe temporaire</span>
+                  </li>
+                  <li>
+                    <svg viewBox="0 0 16 16" fill="none" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M5 8l2 2 4-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span><strong>Lien de confirmation</strong> — valable 24h pour activer le compte</span>
+                  </li>
+                </ul>
+              </div>
             </div>
 
             <div class="form-actions">
@@ -334,16 +340,194 @@
           </div>
         }
 
+        <!-- ── Vue Audit Logs ─────────────────────────────────────────────── -->
+        @if (adminView === 'audit') {
+
+          <div class="audit-filters">
+            <div class="filter-group">
+              <label class="filter-label">Action</label>
+              <select class="filter-select" [(ngModel)]="auditFilterAction">
+                <option value="">Toutes les actions</option>
+                @for (action of auditActions; track action) {
+                  <option [value]="action">{{ action }}</option>
+                }
+              </select>
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Date début</label>
+              <input type="date" class="filter-input" [(ngModel)]="auditFilterDateDebut" />
+            </div>
+            <div class="filter-group">
+              <label class="filter-label">Date fin</label>
+              <input type="date" class="filter-input" [(ngModel)]="auditFilterDateFin" />
+            </div>
+            <div class="filter-actions">
+              <button class="btn-filter-apply" (click)="applyAuditFilters()">
+                <svg viewBox="0 0 20 20" fill="none"><path d="M3 5h14M6 10h8M9 15h2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+                Filtrer
+              </button>
+              <button class="btn-filter-reset" (click)="resetAuditFilters()">Réinitialiser</button>
+            </div>
+          </div>
+
+          @if (auditLoading) {
+            <div class="users-loading"><span class="spinner-sm"></span> Chargement des logs…</div>
+          } @else if (auditError) {
+            <div class="alert-error" style="margin: 16px 24px;">{{ auditError }}</div>
+          } @else if (auditLogs.length === 0) {
+            <div class="empty-state">
+              <svg viewBox="0 0 48 48" fill="none"><path d="M18 10H10a2 2 0 0 0-2 2v24a2 2 0 0 0 2 2h20a2 2 0 0 0 2-2V22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M18 6h8v8h-8z" stroke="currentColor" stroke-width="1.5"/><path d="M18 24h12M18 32h8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              <p>Aucun log trouvé pour ces critères.</p>
+            </div>
+          } @else {
+            <div class="users-table-wrap">
+              <table class="users-table">
+                <thead>
+                <tr>
+                  <th>Date / Heure</th>
+                  <th>Utilisateur</th>
+                  <th>Action</th>
+                  <th>Résultat</th>
+                  <th>IP</th>
+                  <th>Détail</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (log of auditLogs; track log.id) {
+                    <tr>
+                      <td class="date-cell">{{ formatDate(log.dateHeure) }}</td>
+                      <td class="email-cell">{{ log.email ?? '—' }}</td>
+                      <td>
+                        <span class="action-chip" [class]="log.succes ? 'action-ok' : 'action-fail'">
+                          {{ log.action }}
+                        </span>
+                      </td>
+                      <td>
+                        @if (log.succes) {
+                          <span class="result-badge success">
+                            <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M4 7l2 2 4-3.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Succès
+                          </span>
+                        } @else {
+                          <span class="result-badge failure">
+                            <svg viewBox="0 0 14 14" fill="none" width="12" height="12"><circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.2"/><path d="M5 5l4 4M9 5l-4 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            Échec
+                          </span>
+                        }
+                      </td>
+                      <td class="ip-cell">{{ log.ipAddress || '—' }}</td>
+                      <td class="detail-cell">{{ log.messageErreur ?? '' }}</td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination-bar">
+              <span class="pagination-info">{{ auditTotal }} résultat{{ auditTotal > 1 ? 's' : '' }} — Page {{ auditPage }} / {{ auditTotalPages }}</span>
+              <div class="pagination-btns">
+                <button class="btn-page" [disabled]="auditPage <= 1" (click)="auditPrevPage()">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="btn-page" [disabled]="auditPage >= auditTotalPages" (click)="auditNextPage()">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          }
+        }
+
+        <!-- ── Vue Sessions actives ───────────────────────────────────────── -->
+        @if (adminView === 'sessions') {
+
+          <div class="admin-toolbar">
+            <span class="toolbar-count">{{ sessionsTotal }} session{{ sessionsTotal > 1 ? 's' : '' }} au total</span>
+            <button class="btn-refresh" (click)="loadSessions()" [disabled]="sessionsLoading">
+              <svg viewBox="0 0 20 20" fill="none"><path d="M4 10a6 6 0 1 0 1.2-3.6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M4 6v4h4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Actualiser
+            </button>
+          </div>
+
+          @if (sessionsLoading) {
+            <div class="users-loading"><span class="spinner-sm"></span> Chargement des sessions…</div>
+          } @else if (sessionsError) {
+            <div class="alert-error" style="margin: 16px 24px;">{{ sessionsError }}</div>
+          } @else if (sessions.length === 0) {
+            <div class="empty-state">
+              <svg viewBox="0 0 48 48" fill="none"><circle cx="20" cy="16" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M4 42c0-8.837 7.163-16 16-16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="36" cy="36" r="8" stroke="currentColor" stroke-width="1.5"/><path d="M36 32v4l2 2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              <p>Aucune session trouvée.</p>
+            </div>
+          } @else {
+            <div class="users-table-wrap">
+              <table class="users-table">
+                <thead>
+                <tr>
+                  <th>Utilisateur</th>
+                  <th>IP</th>
+                  <th>Navigateur</th>
+                  <th>Début de session</th>
+                  <th>Dernière activité</th>
+                  <th>Statut</th>
+                  <th>Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                  @for (session of sessions; track session.id) {
+                    <tr>
+                      <td class="email-cell">{{ session.email ?? '—' }}</td>
+                      <td class="ip-cell">{{ session.ipAddress || '—' }}</td>
+                      <td class="ua-cell">{{ shortUserAgent(session.userAgent) }}</td>
+                      <td class="date-cell">{{ formatDate(session.dateCreation) }}</td>
+                      <td class="date-cell">{{ formatDate(session.dateDerniereActivite) }}</td>
+                      <td>
+                        @if (session.statut === 'ACTIVE') {
+                          <span class="session-badge active"><span class="session-dot"></span>Active</span>
+                        } @else {
+                          <span class="session-badge revoked">Révoquée</span>
+                        }
+                      </td>
+                      <td>
+                        @if (session.statut === 'ACTIVE') {
+                          <button class="btn-action danger" [disabled]="revokingSessionId === session.id" (click)="revokeSession(session)">
+                            @if (revokingSessionId === session.id) {
+                              <span class="spinner-sm"></span>
+                            } @else {
+                              <svg viewBox="0 0 20 20" fill="none"><path d="M10 4a6 6 0 1 0 0 12A6 6 0 0 0 10 4z" stroke="currentColor" stroke-width="1.3"/><path d="M7.5 7.5l5 5M12.5 7.5l-5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+                            }
+                            Révoquer
+                          </button>
+                        } @else {
+                          <span class="no-role">—</span>
+                        }
+                      </td>
+                    </tr>
+                  }
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination-bar">
+              <span class="pagination-info">{{ sessionsTotal }} session{{ sessionsTotal > 1 ? 's' : '' }} — Page {{ sessionsPage }} / {{ sessionsTotalPages }}</span>
+              <div class="pagination-btns">
+                <button class="btn-page" [disabled]="sessionsPage <= 1" (click)="sessionsPrevPage()">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M12 5l-5 5 5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="btn-page" [disabled]="sessionsPage >= sessionsTotalPages" (click)="sessionsNextPage()">
+                  <svg viewBox="0 0 20 20" fill="none"><path d="M8 5l5 5-5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+              </div>
+            </div>
+          }
+        }
+
       </div>
     }
 
-    <!-- Profil + MFA -->
+    <!-- ══════════════════════════════════════════════════════════════════════
+         PROFIL + MFA
+    ════════════════════════════════════════════════════════════════════════ -->
     @if (userInfo) {
       <div class="info-section">
 
-        <div class="info-section-header">
-          <h2>Votre profil</h2>
-        </div>
+        <div class="info-section-header"><h2>Votre profil</h2></div>
 
         <div class="info-grid">
           <div class="info-row">
