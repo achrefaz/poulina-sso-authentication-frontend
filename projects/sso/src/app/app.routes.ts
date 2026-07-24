@@ -6,8 +6,29 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./pages/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent,
+      ),
+  },
+  {
+    path: 'reset-password',
+    loadComponent: () =>
+      import('./pages/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent,
+      ),
+  },
+  {
     path: 'mfa',
     loadComponent: () => import('./pages/mfa/mfa.component').then((m) => m.MfaComponent),
+  },
+  {
+    path: 'platform-select',
+    loadComponent: () =>
+      import('./pages/platform-select/platform-select.component').then(
+        (m) => m.PlatformSelectComponent,
+      ),
   },
   {
     path: 'change-password',

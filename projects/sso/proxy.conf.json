@@ -1,0 +1,13 @@
+{
+  "/api": {
+    "target": "http://localhost:5095",
+    "secure": false,
+    "changeOrigin": true,
+    "withCredentials": true,
+    "logLevel": "debug",
+    "headers": {
+      "Access-Control-Allow-Origin": "http://localhost:4200",
+      "Access-Control-Allow-Credentials": "true"
+    }
+  }
+}

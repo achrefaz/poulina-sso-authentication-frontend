@@ -1,107 +1,95 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError, firstValueFrom } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
-import {
-  SHARED_AUTH_CONFIG,
-  TokenStore,
-  generateCodeVerifier,
-  generateCodeChallenge,
-  generateState,
-} from 'shared-auth';
-import type { TokenResponse, RefreshResponse, UserInfo } from 'shared-auth';
+import { TokenStore } from 'shared-auth';
+import type { RefreshResponse, UserInfo } from 'shared-auth';
+import { environment } from '../../../environments/environment';
 
-const SSO_URL = 'http://localhost:4200';
+const SSO_URL = environment.ssoUrl;
+const SSO_API_URL = environment.apiUrl;
+
+// const SSO_URL = 'http://localhost:4200';
+// const SSO_API_URL = 'http://localhost:5095';
 const CLIENT_ID = 'dashboard-client';
-const REDIRECT_URI = 'http://localhost:3003/callback';
-const SCOPES = 'openid profile email';
-const KEY_VERIFIER = 'pkce_verifier';
-const KEY_STATE = 'oauth_state';
+
+export interface RefreshError {
+  status: number;
+  errorCode?: string;
+  roles?: string[];
+  message?: string;
+}
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
   private readonly store = inject(TokenStore);
-  private readonly config = inject(SHARED_AUTH_CONFIG);
-  private get api(): string {
-    return this.config.apiUrl;
-  }
 
-  async redirectToSso(): Promise<void> {
-    const verifier = generateCodeVerifier();
-    const challenge = await generateCodeChallenge(verifier);
-    const state = generateState();
-
-    sessionStorage.setItem(KEY_VERIFIER, verifier);
-    sessionStorage.setItem(KEY_STATE, state);
-
-    const params = new URLSearchParams({
-      client_id: CLIENT_ID,
-      redirect_uri: REDIRECT_URI,
-      response_type: 'code',
-      scope: SCOPES,
-      state,
-      code_challenge: challenge,
-      code_challenge_method: 'S256',
-    });
-
-    window.location.href = `${SSO_URL}/login?${params.toString()}`;
-  }
-
-  exchangeCode(code: string, returnedState: string): Observable<TokenResponse> {
-    const verifier = sessionStorage.getItem(KEY_VERIFIER);
-    const savedState = sessionStorage.getItem(KEY_STATE);
-
-    if (!verifier) throw new Error('code_verifier manquant.');
-    if (returnedState !== savedState) throw new Error('state invalide.');
-
-    return this.http
-      .post<TokenResponse>(
-        `${this.api}/api/Auth/token`,
-        {
-          grantType: 'authorization_code',
-          code,
-          clientId: CLIENT_ID,
-          redirectUri: REDIRECT_URI,
-          codeVerifier: verifier,
-        },
-        { withCredentials: true },
-      )
-      .pipe(
-        tap((res) => {
-          sessionStorage.removeItem(KEY_VERIFIER);
-          sessionStorage.removeItem(KEY_STATE);
-          this.store.setToken(res.access_token, res.expires_in);
-        }),
-        catchError((err) => throwError(() => err)),
-      );
+  async ensureAuthenticated(): Promise<boolean> {
+    if (this.store.isAuthenticated()) {
+      return true;
+    }
+    try {
+      await firstValueFrom(this.refresh());
+      return true;
+    } catch (error) {
+      return false;
+    }
   }
 
   refresh(): Observable<RefreshResponse> {
     return this.http
       .post<RefreshResponse>(
-        `${this.api}/api/Auth/refresh`,
+        `${SSO_API_URL}/api/Auth/refresh`,
         { clientId: CLIENT_ID },
         { withCredentials: true },
       )
       .pipe(
-        tap((res) => this.store.setToken(res.accessToken, res.expiresIn)),
-        catchError((err) => throwError(() => err)),
+        tap((res) => {
+          this.store.setToken(res.accessToken, res.expiresIn);
+        }),
+        catchError((err: HttpErrorResponse) => {
+          const refreshError: RefreshError = {
+            status: err.status,
+            errorCode: err.error?.errorCode,
+            roles: err.error?.roles,
+            message: err.error?.message,
+          };
+          return throwError(() => refreshError);
+        }),
       );
   }
 
   getUserInfo(): Observable<UserInfo> {
     return this.http
-      .get<UserInfo>(`${this.api}/api/Auth/userinfo`, { withCredentials: true })
-      .pipe(catchError((err) => throwError(() => err)));
+      .get<UserInfo>(`${SSO_API_URL}/api/Auth/userinfo`, { withCredentials: true }) // ← était '/api/Auth/userinfo'
+      .pipe(
+        catchError((err) => {
+          return throwError(() => err);
+        }),
+      );
   }
 
   logout(): Observable<{ message: string }> {
     return this.http
-      .post<{ message: string }>(`${this.api}/api/Auth/logout`, {}, { withCredentials: true })
+      .post<{ message: string }>(`${SSO_API_URL}/api/Auth/logout`, {}, { withCredentials: true }) // ← était '/api/Auth/logout'
       .pipe(
-        tap(() => this.store.clear()),
-        catchError((err) => throwError(() => err)),
+        tap(() => {
+          this.store.clear();
+          sessionStorage.removeItem('sso_roles');
+          sessionStorage.removeItem('sso_tokens');
+          window.location.href = `${SSO_URL}/login`;
+        }),
+        catchError((err) => {
+          return throwError(() => err);
+        }),
       );
+  }
+
+  redirectToSso(): void {
+    this.store.clear();
+    sessionStorage.removeItem('sso_roles');
+    sessionStorage.removeItem('sso_tokens');
+    window.location.href = `${SSO_URL}/login`;
   }
 }

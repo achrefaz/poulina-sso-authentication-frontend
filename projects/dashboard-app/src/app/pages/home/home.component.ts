@@ -6,15 +6,17 @@ import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
 import { TokenStore } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
+import { environment } from '../../../environments/environment';
 
 type MfaStep = 'idle' | 'qr' | 'verify-setup' | 'disable';
-type AdminView = 'none' | 'list' | 'create';
+type AdminView = 'none' | 'list' | 'create' | 'audit' | 'sessions';
 
 interface AppRole {
   id: string;
   nom: string;
   description: string;
 }
+
 interface AppUser {
   id: string;
   email: string;
@@ -27,6 +29,36 @@ interface AppUser {
   roles: { id: string; nom: string }[];
 }
 
+interface AuditLogEntry {
+  id: string;
+  email: string | null;
+  action: string;
+  categorie: string;
+  ipAddress: string;
+  dateHeure: string;
+  succes: boolean;
+  messageErreur: string | null;
+}
+
+interface SessionEntry {
+  id: string;
+  sessionId: string;
+  email: string | null;
+  ipAddress: string;
+  userAgent: string;
+  dateCreation: string;
+  dateDerniereActivite: string;
+  statut: string;
+}
+
+interface PagedResult<T> {
+  items: T[];
+  total: number;
+  page: number;
+  pageSize: number;
+  totalPages: number;
+}
+
 @Component({
   selector: 'app-home',
   standalone: true,
@@ -37,6 +69,8 @@ interface AppUser {
 export class HomeComponent implements OnInit {
   userInfo: UserInfo | null = null;
   isLoggingOut = false;
+  isLoading = true; // Ajouté pour l'état de chargement
+  loadError = '';
   today = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
     day: 'numeric',
@@ -45,7 +79,7 @@ export class HomeComponent implements OnInit {
   });
 
   // ── MFA ───────────────────────────────────────────────────────────────────
-  mfaEnabled: boolean = false;
+  mfaEnabled = false;
   mfaStep: MfaStep = 'idle';
   mfaLoading = false;
   mfaError = '';
@@ -56,7 +90,7 @@ export class HomeComponent implements OnInit {
   setupCode = '';
   disableCode = '';
 
-  // ── Gestion utilisateurs ─────────────────────────────────────────────────
+  // ── Gestion utilisateurs ──────────────────────────────────────────────────
   adminView: AdminView = 'none';
   users: AppUser[] = [];
   roles: AppRole[] = [];
@@ -75,7 +109,55 @@ export class HomeComponent implements OnInit {
   blockLoading = false;
   blockError = '';
 
-  private readonly api = 'http://localhost:5095';
+  // ── Audit Logs ────────────────────────────────────────────────────────────
+  auditLogs: AuditLogEntry[] = [];
+  auditTotal = 0;
+  auditPage = 1;
+  auditPageSize = 20;
+  auditTotalPages = 0;
+  auditLoading = false;
+  auditError = '';
+  auditFilterAction = '';
+  auditFilterDateDebut = '';
+  auditFilterDateFin = '';
+
+  readonly auditActions = [
+    'LOGIN_SUCCESS',
+    'LOGIN_FAILED',
+    'LOGOUT',
+    'LOGOUT_GLOBAL',
+    'REGISTER',
+    'REFRESH_TOKEN',
+    'TOKEN_EXCHANGE',
+    'MFA_SETUP',
+    'MFA_VERIFY',
+    'MFA_DISABLE',
+    'EMAIL_VERIFIED',
+    'CONFIRMATION_RESENT',
+    'CREATE_USER',
+    'BLOCK_USER',
+    'UNBLOCK_USER',
+    'CHANGE_PASSWORD',
+    'CHANGE_PASSWORD_FAILED',
+    'ASSIGN_ROLE',
+    'REVOKE_ROLE',
+    'CREATE_ROLE',
+    'REVOKE_SESSION',
+  ];
+
+  // ── Sessions ──────────────────────────────────────────────────────────────
+  sessions: SessionEntry[] = [];
+  sessionsTotal = 0;
+  sessionsPage = 1;
+  sessionsPageSize = 20;
+  sessionsTotalPages = 0;
+  sessionsLoading = false;
+  sessionsError = '';
+  revokingSessionId = '';
+
+  private readonly api = environment.apiUrl;
+
+  // private readonly api = 'http://localhost:5095';
 
   constructor(
     private authService: AuthService,
@@ -85,13 +167,55 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.authService.getUserInfo().subscribe({
-      next: (info) => {
-        this.userInfo = info;
-        this.mfaEnabled = (info as any)?.mfa_enabled ?? false;
-      },
-      error: (err) => console.error('Erreur chargement profil', err),
-    });
+    // Attendre que le token soit disponible
+    this.loadUserInfoWithRetry();
+  }
+
+  /**
+   * Charge les informations utilisateur avec tentative de refresh si nécessaire
+   */
+  private async loadUserInfoWithRetry(): Promise<void> {
+    this.isLoading = true;
+    this.loadError = '';
+
+    try {
+      let token = this.tokenStore.getToken();
+
+      if (!token) {
+        try {
+          const refreshResult = await this.authService.refresh().toPromise();
+          token = this.tokenStore.getToken();
+        } catch (refreshError) {
+          this.router.navigate(['/login']);
+          return;
+        }
+      }
+
+      if (!token) {
+        this.router.navigate(['/login']);
+        return;
+      }
+
+      this.authService.getUserInfo().subscribe({
+        next: (info) => {
+          this.userInfo = info;
+          this.mfaEnabled = (info as any)?.mfa_enabled ?? false;
+          this.isLoading = false;
+        },
+        error: (err) => {
+          this.loadError = 'Impossible de charger votre profil. Veuillez réessayer.';
+          this.isLoading = false;
+
+          // Si 401, rediriger vers login
+          if (err.status === 401) {
+            this.authService.redirectToSso();
+          }
+        },
+      });
+    } catch (error) {
+      this.isLoading = false;
+      this.loadError = 'Une erreur est survenue. Veuillez réessayer.';
+    }
   }
 
   get initials(): string {
@@ -102,6 +226,8 @@ export class HomeComponent implements OnInit {
   get isAdmin(): boolean {
     return this.userInfo?.roles?.includes('ADMIN') ?? false;
   }
+
+  // ... le reste du code (toutes les méthodes admin, mfa, etc.) reste identique ...
 
   // ── Admin : navigation ────────────────────────────────────────────────────
   openUserList(): void {
@@ -118,6 +244,20 @@ export class HomeComponent implements OnInit {
     if (this.roles.length === 0) this.loadRoles();
   }
 
+  openAuditLogs(): void {
+    this.adminView = 'audit';
+    this.auditError = '';
+    this.auditPage = 1;
+    this.loadAuditLogs();
+  }
+
+  openSessions(): void {
+    this.adminView = 'sessions';
+    this.sessionsError = '';
+    this.sessionsPage = 1;
+    this.loadSessions();
+  }
+
   closeAdmin(): void {
     this.adminView = 'none';
     this.blockingUserId = '';
@@ -125,7 +265,7 @@ export class HomeComponent implements OnInit {
     this.blockError = '';
   }
 
-  // ── Admin : charger les données ───────────────────────────────────────────
+  // ── Admin : charger utilisateurs ──────────────────────────────────────────
   loadUsers(): void {
     this.usersLoading = true;
     this.http
@@ -185,7 +325,6 @@ export class HomeComponent implements OnInit {
     }
 
     this.createLoading = true;
-
     this.http
       .post<{ message: string; userId: string }>(
         `${this.api}/api/User/admin/users`,
@@ -199,8 +338,8 @@ export class HomeComponent implements OnInit {
         { withCredentials: true },
       )
       .subscribe({
-        next: (res) => {
-          this.createSuccess = `Utilisateur ${this.newUser.email} créé avec succès. Un email de confirmation a été envoyé.`;
+        next: () => {
+          this.createSuccess = `Utilisateur ${this.newUser.email} créé. Les identifiants et le lien de confirmation ont été envoyés par email.`;
           this.newUser = { prenom: '', nom: '', email: '', password: '', roleIds: [] };
           this.createLoading = false;
         },
@@ -235,7 +374,11 @@ export class HomeComponent implements OnInit {
     this.http
       .patch<{
         message: string;
-      }>(`${this.api}/api/User/admin/users/${user.id}/bloquer`, { raison: this.blockRaison }, { withCredentials: true })
+      }>(
+        `${this.api}/api/User/admin/users/${user.id}/bloquer`,
+        { raison: this.blockRaison },
+        { withCredentials: true },
+      )
       .subscribe({
         next: () => {
           user.statut = 'BLOQUE';
@@ -263,6 +406,124 @@ export class HomeComponent implements OnInit {
           this.blockError = err?.error?.message ?? 'Erreur déblocage.';
         },
       });
+  }
+
+  // ── Audit Logs ────────────────────────────────────────────────────────────
+  loadAuditLogs(): void {
+    this.auditLoading = true;
+    this.auditError = '';
+
+    const params: Record<string, string> = {
+      page: String(this.auditPage),
+      pageSize: String(this.auditPageSize),
+    };
+    if (this.auditFilterAction) params['action'] = this.auditFilterAction;
+    if (this.auditFilterDateDebut) params['dateDebut'] = this.auditFilterDateDebut;
+    if (this.auditFilterDateFin) params['dateFin'] = this.auditFilterDateFin;
+
+    this.http
+      .get<
+        PagedResult<AuditLogEntry>
+      >(`${this.api}/api/User/admin/audit-logs`, { params, withCredentials: true })
+      .subscribe({
+        next: (res) => {
+          this.auditLogs = res.items;
+          this.auditTotal = res.total;
+          this.auditTotalPages = res.totalPages;
+          this.auditLoading = false;
+        },
+        error: (err) => {
+          this.auditError = err?.error?.message ?? 'Erreur chargement des logs.';
+          this.auditLoading = false;
+        },
+      });
+  }
+
+  applyAuditFilters(): void {
+    this.auditPage = 1;
+    this.loadAuditLogs();
+  }
+
+  resetAuditFilters(): void {
+    this.auditFilterAction = '';
+    this.auditFilterDateDebut = '';
+    this.auditFilterDateFin = '';
+    this.auditPage = 1;
+    this.loadAuditLogs();
+  }
+
+  auditPrevPage(): void {
+    if (this.auditPage > 1) {
+      this.auditPage--;
+      this.loadAuditLogs();
+    }
+  }
+
+  auditNextPage(): void {
+    if (this.auditPage < this.auditTotalPages) {
+      this.auditPage++;
+      this.loadAuditLogs();
+    }
+  }
+
+  // ── Sessions ──────────────────────────────────────────────────────────────
+  loadSessions(): void {
+    this.sessionsLoading = true;
+    this.sessionsError = '';
+
+    this.http
+      .get<PagedResult<SessionEntry>>(`${this.api}/api/User/admin/sessions`, {
+        params: { page: String(this.sessionsPage), pageSize: String(this.sessionsPageSize) },
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res) => {
+          this.sessions = res.items;
+          this.sessionsTotal = res.total;
+          this.sessionsTotalPages = res.totalPages;
+          this.sessionsLoading = false;
+        },
+        error: (err) => {
+          this.sessionsError = err?.error?.message ?? 'Erreur chargement des sessions.';
+          this.sessionsLoading = false;
+        },
+      });
+  }
+
+  revokeSession(session: SessionEntry): void {
+    this.revokingSessionId = session.id;
+    this.http
+      .patch<{
+        message: string;
+      }>(
+        `${this.api}/api/User/admin/sessions/${session.id}/revoquer`,
+        {},
+        { withCredentials: true },
+      )
+      .subscribe({
+        next: () => {
+          session.statut = 'REVOQUEE';
+          this.revokingSessionId = '';
+        },
+        error: (err) => {
+          this.sessionsError = err?.error?.message ?? 'Erreur révocation session.';
+          this.revokingSessionId = '';
+        },
+      });
+  }
+
+  sessionsPrevPage(): void {
+    if (this.sessionsPage > 1) {
+      this.sessionsPage--;
+      this.loadSessions();
+    }
+  }
+
+  sessionsNextPage(): void {
+    if (this.sessionsPage < this.sessionsTotalPages) {
+      this.sessionsPage++;
+      this.loadSessions();
+    }
   }
 
   // ── MFA ───────────────────────────────────────────────────────────────────
@@ -304,7 +565,11 @@ export class HomeComponent implements OnInit {
     this.http
       .post<{
         message: string;
-      }>(`${this.api}/api/Auth/mfa/verify-setup`, { code: this.setupCode }, { withCredentials: true })
+      }>(
+        `${this.api}/api/Auth/mfa/verify-setup`,
+        { code: this.setupCode },
+        { withCredentials: true },
+      )
       .subscribe({
         next: () => {
           this.mfaEnabled = true;
@@ -370,6 +635,24 @@ export class HomeComponent implements OnInit {
     if (field === 'disable') this.disableCode = clean;
   }
 
+  // ── Utilitaires ───────────────────────────────────────────────────────────
+  formatDate(iso: string): string {
+    if (!iso) return '—';
+    return new Date(iso).toLocaleString('fr-FR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+  }
+
+  shortUserAgent(ua: string): string {
+    if (!ua) return '—';
+    const match = ua.match(/(Chrome|Firefox|Safari|Edge|Opera)\/[\d.]+/);
+    return match ? match[0] : ua.slice(0, 40);
+  }
+
   // ── Logout ────────────────────────────────────────────────────────────────
   async logout(): Promise<void> {
     this.isLoggingOut = true;
@@ -377,7 +660,10 @@ export class HomeComponent implements OnInit {
       await this.authService.logout().toPromise();
     } finally {
       this.tokenStore.clear();
-      window.location.href = 'http://localhost:4200/login';
+      sessionStorage.removeItem('sso_roles');
+      sessionStorage.removeItem('sso_tokens');
+      // window.location.href = 'http://localhost:4200/login';
+      window.location.href = `${environment.ssoUrl}/login`;
     }
   }
 }

@@ -1,19 +1,12 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
   "version": 1,
-  "cli": {
-    "packageManager": "npm",
-    "analytics": "3996bbe2-2b0d-4ba7-af40-6d71838f6b91"
-  },
+  "cli": { "packageManager": "npm", "analytics": "3996bbe2-2b0d-4ba7-af40-6d71838f6b91" },
   "newProjectRoot": "projects",
   "projects": {
     "sso": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "root": "projects/sso",
       "sourceRoot": "projects/sso/src",
       "prefix": "app",
@@ -24,30 +17,15 @@
             "browser": "projects/sso/src/main.ts",
             "tsConfig": "projects/sso/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/sso/public"
-              }
-            ],
+            "assets": [{ "glob": "**/*", "input": "projects/sso/public" }],
             "styles": ["projects/sso/src/styles.scss"],
-            "security": {
-              "allowedHosts": []
-            }
+            "security": { "allowedHosts": [] }
           },
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                { "type": "initial", "maximumWarning": "500kB", "maximumError": "1MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "10kB", "maximumError": "20kB" }
               ],
               "outputHashing": "all"
             },
@@ -67,31 +45,19 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "port": 4200
-          },
+          "options": { "port": 4200, "proxyConfig": "projects/sso/proxy.conf.json" },
           "configurations": {
-            "production": {
-              "buildTarget": "sso:build:production"
-            },
-            "development": {
-              "buildTarget": "sso:build:development"
-            }
+            "production": { "buildTarget": "sso:build:production" },
+            "development": { "buildTarget": "sso:build:development" }
           },
           "defaultConfiguration": "development"
         },
-        "test": {
-          "builder": "@angular/build:unit-test"
-        }
+        "test": { "builder": "@angular/build:unit-test" }
       }
     },
     "rh-app": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "root": "projects/rh-app",
       "sourceRoot": "projects/rh-app/src",
       "prefix": "app",
@@ -102,30 +68,15 @@
             "browser": "projects/rh-app/src/main.ts",
             "tsConfig": "projects/rh-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/rh-app/public"
-              }
-            ],
+            "assets": [{ "glob": "**/*", "input": "projects/rh-app/public" }],
             "styles": ["projects/rh-app/src/styles.scss"],
-            "security": {
-              "allowedHosts": []
-            }
+            "security": { "allowedHosts": [] }
           },
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                { "type": "initial", "maximumWarning": "500kB", "maximumError": "1MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "10kB", "maximumError": "20kB" }
               ],
               "outputHashing": "all"
             },
@@ -145,31 +96,19 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "port": 3001
-          },
+          "options": { "port": 3001, "proxyConfig": "projects/rh-app/proxy.conf.json" },
           "configurations": {
-            "production": {
-              "buildTarget": "rh-app:build:production"
-            },
-            "development": {
-              "buildTarget": "rh-app:build:development"
-            }
+            "production": { "buildTarget": "rh-app:build:production" },
+            "development": { "buildTarget": "rh-app:build:development" }
           },
           "defaultConfiguration": "development"
         },
-        "test": {
-          "builder": "@angular/build:unit-test"
-        }
+        "test": { "builder": "@angular/build:unit-test" }
       }
     },
     "finance-app": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "root": "projects/finance-app",
       "sourceRoot": "projects/finance-app/src",
       "prefix": "app",
@@ -180,30 +119,15 @@
             "browser": "projects/finance-app/src/main.ts",
             "tsConfig": "projects/finance-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/finance-app/public"
-              }
-            ],
+            "assets": [{ "glob": "**/*", "input": "projects/finance-app/public" }],
             "styles": ["projects/finance-app/src/styles.scss"],
-            "security": {
-              "allowedHosts": []
-            }
+            "security": { "allowedHosts": [] }
           },
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                { "type": "initial", "maximumWarning": "500kB", "maximumError": "1MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "10kB", "maximumError": "20kB" }
               ],
               "outputHashing": "all"
             },
@@ -223,31 +147,19 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "port": 3002
-          },
+          "options": { "port": 3002, "proxyConfig": "projects/finance-app/proxy.conf.json" },
           "configurations": {
-            "production": {
-              "buildTarget": "finance-app:build:production"
-            },
-            "development": {
-              "buildTarget": "finance-app:build:development"
-            }
+            "production": { "buildTarget": "finance-app:build:production" },
+            "development": { "buildTarget": "finance-app:build:development" }
           },
           "defaultConfiguration": "development"
         },
-        "test": {
-          "builder": "@angular/build:unit-test"
-        }
+        "test": { "builder": "@angular/build:unit-test" }
       }
     },
     "dashboard-app": {
       "projectType": "application",
-      "schematics": {
-        "@schematics/angular:component": {
-          "style": "scss"
-        }
-      },
+      "schematics": { "@schematics/angular:component": { "style": "scss" } },
       "root": "projects/dashboard-app",
       "sourceRoot": "projects/dashboard-app/src",
       "prefix": "app",
@@ -258,30 +170,15 @@
             "browser": "projects/dashboard-app/src/main.ts",
             "tsConfig": "projects/dashboard-app/tsconfig.app.json",
             "inlineStyleLanguage": "scss",
-            "assets": [
-              {
-                "glob": "**/*",
-                "input": "projects/dashboard-app/public"
-              }
-            ],
+            "assets": [{ "glob": "**/*", "input": "projects/dashboard-app/public" }],
             "styles": ["projects/dashboard-app/src/styles.scss"],
-            "security": {
-              "allowedHosts": []
-            }
+            "security": { "allowedHosts": [] }
           },
           "configurations": {
             "production": {
               "budgets": [
-                {
-                  "type": "initial",
-                  "maximumWarning": "500kB",
-                  "maximumError": "1MB"
-                },
-                {
-                  "type": "anyComponentStyle",
-                  "maximumWarning": "4kB",
-                  "maximumError": "8kB"
-                }
+                { "type": "initial", "maximumWarning": "500kB", "maximumError": "1MB" },
+                { "type": "anyComponentStyle", "maximumWarning": "10kB", "maximumError": "20kB" }
               ],
               "outputHashing": "all"
             },
@@ -301,22 +198,14 @@
         },
         "serve": {
           "builder": "@angular/build:dev-server",
-          "options": {
-            "port": 3003
-          },
+          "options": { "port": 3003, "proxyConfig": "projects/dashboard-app/proxy.conf.json" },
           "configurations": {
-            "production": {
-              "buildTarget": "dashboard-app:build:production"
-            },
-            "development": {
-              "buildTarget": "dashboard-app:build:development"
-            }
+            "production": { "buildTarget": "dashboard-app:build:production" },
+            "development": { "buildTarget": "dashboard-app:build:development" }
           },
           "defaultConfiguration": "development"
         },
-        "test": {
-          "builder": "@angular/build:unit-test"
-        }
+        "test": { "builder": "@angular/build:unit-test" }
       }
     },
     "shared-auth": {
@@ -328,20 +217,14 @@
         "build": {
           "builder": "@angular/build:ng-packagr",
           "configurations": {
-            "production": {
-              "tsConfig": "projects/shared-auth/tsconfig.lib.prod.json"
-            },
-            "development": {
-              "tsConfig": "projects/shared-auth/tsconfig.lib.json"
-            }
+            "production": { "tsConfig": "projects/shared-auth/tsconfig.lib.prod.json" },
+            "development": { "tsConfig": "projects/shared-auth/tsconfig.lib.json" }
           },
           "defaultConfiguration": "production"
         },
         "test": {
           "builder": "@angular/build:unit-test",
-          "options": {
-            "tsConfig": "projects/shared-auth/tsconfig.spec.json"
-          }
+          "options": { "tsConfig": "projects/shared-auth/tsconfig.spec.json" }
         }
       }
     }

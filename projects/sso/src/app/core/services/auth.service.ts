@@ -2,30 +2,19 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, throwError } from 'rxjs';
-import { catchError, tap } from 'rxjs/operators';
+import { catchError, map, tap } from 'rxjs/operators';
 import { TokenStore } from 'shared-auth';
-import type { OAuthParams, LoginWithCodeResponse, UserInfo } from 'shared-auth';
+import type {
+  UserInfo,
+  LoginDirectResponse,
+  MfaVerifyResponse,ForgotPasswordResponse,
+  ResetPasswordResponse
+} from 'shared-auth';
 import { environment } from '../../../environments/environment';
 
-export type { OAuthParams, UserInfo };
+export type { UserInfo };
 
-interface LoginWithCodePayload {
-  clientId: string;
-  redirectUri: string;
-  state: string | null;
-  codeChallenge: string;
-  codeChallengeMethod: string;
-  scopes: string;
-}
-
-interface MfaVerifyPayload {
-  clientId: string;
-  redirectUri: string;
-  state: string | null;
-  codeChallenge: string;
-  codeChallengeMethod: string;
-  scopes: string;
-}
+const ROLE_CLAIM = 'http://schemas.microsoft.com/ws/2008/06/identity/claims/role';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -34,79 +23,51 @@ export class AuthService {
   private readonly router = inject(Router);
   private readonly api = environment.apiUrl;
 
-  // ── OAuth2 params depuis la query string ──────────────────────────────────
-
-  extractOAuthParams(): OAuthParams | null {
-    const p = new URLSearchParams(window.location.search);
-    const clientId = p.get('client_id');
-    const redirectUri = p.get('redirect_uri');
-    const codeChallenge = p.get('code_challenge');
-    const codeChallengeMethod = p.get('code_challenge_method');
-
-    if (!clientId || !redirectUri || !codeChallenge || !codeChallengeMethod) return null;
-
-    return {
-      clientId,
-      redirectUri,
-      responseType: p.get('response_type') ?? 'code',
-      scope: p.get('scope') ?? 'openid profile email',
-      state: p.get('state'),
-      codeChallenge,
-      codeChallengeMethod,
-    };
+  // ── Rôles réels, récupérés via le cookie HttpOnly (jamais via URL) ───────
+  fetchCurrentRoles(): Observable<string[]> {
+    return this.http
+      .post<{
+        accessToken: string;
+        expiresIn: number;
+      }>(`${this.api}/api/Auth/refresh`, {}, { withCredentials: true })
+      .pipe(
+        tap((res) => this.store.setToken(res.accessToken, res.expiresIn)),
+        map(() => this.getRolesFromToken()),
+        catchError((err) => throwError(() => err)),
+      );
   }
 
-  // ── Login OAuth2 ──────────────────────────────────────────────────────────
+  private getRolesFromToken(): string[] {
+    const payload = this.store.decode();
+    if (!payload) return [];
+    const claim = payload[ROLE_CLAIM] ?? payload['role'] ?? payload['roles'];
+    if (Array.isArray(claim)) return claim as string[];
+    if (typeof claim === 'string') return [claim];
+    return [];
+  }
 
-  loginWithCode(
-    email: string,
-    password: string,
-    params: LoginWithCodePayload,
-  ): Observable<LoginWithCodeResponse> {
+  loginDirect(email: string, password: string): Observable<LoginDirectResponse> {
     return this.http
-      .post<LoginWithCodeResponse>(
-        `${this.api}/api/Auth/login-with-code`,
-        {
-          email,
-          password,
-          clientId: params.clientId,
-          redirectUri: params.redirectUri,
-          state: params.state,
-          codeChallenge: params.codeChallenge,
-          codeChallengeMethod: params.codeChallengeMethod,
-          scopes: params.scopes,
-        },
+      .post<LoginDirectResponse>(
+        `${this.api}/api/Auth/login-direct`,
+        { email, password },
         { withCredentials: true },
       )
       .pipe(catchError(this.handleError));
   }
 
-  // ── MFA verify — valide le code TOTP et retourne redirectUri avec code OAuth2 ──
-
-  verifyMfa(
-    mfaPendingToken: string,
-    code: string,
-    params: MfaVerifyPayload,
-  ): Observable<{ redirectUri: string }> {
+  verifyMfa(mfaPendingToken: string, code: string): Observable<MfaVerifyResponse> {
     return this.http
-      .post<{ redirectUri: string }>(
+      .post<MfaVerifyResponse>(
         `${this.api}/api/Auth/mfa/verify`,
-        {
-          mfaPendingToken,
-          code,
-          clientId: params.clientId,
-          redirectUri: params.redirectUri,
-          state: params.state,
-          codeChallenge: params.codeChallenge,
-          codeChallengeMethod: params.codeChallengeMethod,
-          scopes: params.scopes,
-        },
+        { mfaPendingToken, code },
         { withCredentials: true },
       )
-      .pipe(catchError(this.handleError));
+      .pipe(
+        tap((res) => this.store.setToken(res.accessToken, res.expiresIn)),
+        catchError(this.handleError),
+      );
   }
-
-  // ── Email ─────────────────────────────────────────────────────────────────
 
   confirmEmail(token: string): Observable<{ message: string }> {
     return this.http
@@ -120,7 +81,20 @@ export class AuthService {
       .pipe(catchError(this.handleError));
   }
 
-  // ── UserInfo & Logout ─────────────────────────────────────────────────────
+  forgotPassword(email: string): Observable<ForgotPasswordResponse> {
+    return this.http
+      .post<ForgotPasswordResponse>(`${this.api}/api/Auth/forgot-password`, { email })
+      .pipe(catchError(this.handleError));
+  }
+
+  resetPassword(token: string, nouveauMotDePasse: string): Observable<ResetPasswordResponse> {
+    return this.http
+      .post<ResetPasswordResponse>(`${this.api}/api/Auth/reset-password`, {
+        token,
+        nouveauMotDePasse,
+      })
+      .pipe(catchError(this.handleError));
+  }
 
   getUserInfo(): Observable<UserInfo> {
     return this.http

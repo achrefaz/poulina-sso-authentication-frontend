@@ -1,0 +1,37 @@
+version: '3.8'
+
+services:
+  frontend:
+    build: .
+    container_name: poulina-sso-frontend
+    ports:
+      - "80:80"
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped
+
+  backend:
+    image: ${DOCKER_USERNAME}/poulina-sso-backend:latest
+    container_name: poulina-sso-backend
+    ports:
+      - "5095:5095"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=${DB_CONNECTION_STRING}
+    restart: unless-stopped
+
+  database:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: poulina-sso-db
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=${SA_PASSWORD}
+      - MSSQL_PID=Express
+    ports:
+      - "1433:1433"
+    volumes:
+      - sqlserver-data:/var/opt/mssql
+    restart: unless-stopped
+
+volumes:
+  sqlserver-data:

@@ -1,8 +1,27 @@
 import { Component, OnInit } from '@angular/core';
-import { FormsModule, } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from '../../core/services/auth.service';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
+import { environment } from '../../../environments/environment';
+
+const ROLE_PLATFORM_MAP: Record<string, string> = {
+  RH_USER: environment.rhUrl,
+  RH_ADMIN: environment.rhUrl,
+  FINANCE_USER: environment.financeUrl,
+  FINANCE_ADMIN: environment.financeUrl,
+  DIRECTION: environment.dashboardUrl,
+  ADMIN: environment.dashboardUrl,
+};
+
+// const ROLE_PLATFORM_MAP: Record<string, string> = {
+//   RH_USER: 'http://localhost:3001',
+//   RH_ADMIN: 'http://localhost:3001',
+//   FINANCE_USER: 'http://localhost:3002',
+//   FINANCE_ADMIN: 'http://localhost:3002',
+//   DIRECTION: 'http://localhost:3003',
+//   ADMIN: 'http://localhost:3003',
+// };
 
 @Component({
   selector: 'app-mfa',
@@ -17,27 +36,17 @@ export class MfaComponent implements OnInit {
   errorMessage = '';
   pendingToken = '';
 
-  private clientId = '';
-  private redirectUri = '';
-  private state: string | null = null;
-  private codeChallenge = '';
-  private codeChallengeMethod = '';
-  private scope = '';
-
   constructor(
     private route: ActivatedRoute,
+    private router: Router,
     private authService: AuthService,
   ) {}
 
   ngOnInit(): void {
-    const p = this.route.snapshot.queryParamMap;
-    this.pendingToken = p.get('pendingToken') ?? '';
-    this.clientId = p.get('clientId') ?? '';
-    this.redirectUri = p.get('redirectUri') ?? '';
-    this.state = p.get('state');
-    this.codeChallenge = p.get('codeChallenge') ?? '';
-    this.codeChallengeMethod = p.get('codeChallengeMethod') ?? 'S256';
-    this.scope = p.get('scope') ?? 'openid profile email';
+    this.pendingToken = this.route.snapshot.queryParamMap.get('pendingToken') ?? '';
+    if (!this.pendingToken) {
+      this.router.navigate(['/login']);
+    }
   }
 
   async onSubmit(): Promise<void> {
@@ -50,22 +59,11 @@ export class MfaComponent implements OnInit {
     this.errorMessage = '';
 
     try {
-      const result = await this.authService
-        .verifyMfa(this.pendingToken, this.code, {
-          clientId: this.clientId,
-          redirectUri: this.redirectUri,
-          state: this.state,
-          codeChallenge: this.codeChallenge,
-          codeChallengeMethod: this.codeChallengeMethod,
-          scopes: this.scope,
-        })
-        .toPromise();
+      const result = await this.authService.verifyMfa(this.pendingToken, this.code).toPromise();
 
-      if (result?.redirectUri) {
-        window.location.href = result.redirectUri;
-      } else {
-        this.errorMessage = 'Erreur inattendue. Veuillez réessayer.';
-      }
+      if (!result) return;
+
+      this.redirectByRoles(result.roles ?? []);
     } catch (err: any) {
       this.errorMessage = err?.error?.message ?? 'Code incorrect ou expiré.';
     } finally {
@@ -78,5 +76,21 @@ export class MfaComponent implements OnInit {
     const clean = input.value.replace(/\D/g, '').slice(0, 6);
     input.value = clean;
     this.code = clean;
+  }
+
+  private redirectByRoles(roles: string[]): void {
+    const platforms = [...new Set(roles.map((r) => ROLE_PLATFORM_MAP[r]).filter(Boolean))];
+
+    if (platforms.length === 0) {
+      this.router.navigate(['/access-denied']);
+      return;
+    }
+
+    if (platforms.length === 1) {
+      window.location.href = platforms[0];
+      return;
+    }
+
+    this.router.navigate(['/platform-select']);
   }
 }
