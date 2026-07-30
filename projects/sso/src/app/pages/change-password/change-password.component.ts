@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LogoComponent } from '../../shared/components/logo/logo.component';
 import { environment } from '../../../environments/environment';
+import { TokenStore } from 'shared-auth';
 
 @Component({
   selector: 'app-change-password',
@@ -22,31 +23,16 @@ export class ChangePasswordComponent implements OnInit {
   errorMessage = '';
   successMessage = '';
 
-  // Token temporaire pour appeler change-password
-  private accessToken = '';
-
-  // Tous les params OAuth2 conservés pour relancer le flow après succès
-  private clientId = '';
-  private redirectUri = '';
-  private state = '';
-  private codeChallenge = '';
-  private codeChallengeMethod = '';
-  private scope = '';
-
   constructor(
-    private route: ActivatedRoute,
     private http: HttpClient,
+    private store: TokenStore,
+    private router: Router,
   ) {}
 
   ngOnInit(): void {
-    const p = this.route.snapshot.queryParamMap;
-    this.accessToken = p.get('accessToken') ?? '';
-    this.clientId = p.get('clientId') ?? '';
-    this.redirectUri = p.get('redirectUri') ?? '';
-    this.state = p.get('state') ?? '';
-    this.codeChallenge = p.get('codeChallenge') ?? '';
-    this.codeChallengeMethod = p.get('codeChallengeMethod') ?? 'S256';
-    this.scope = p.get('scope') ?? 'openid profile email';
+    if (!this.store.getToken()) {
+      this.router.navigate(['/login']);
+    }
   }
 
   toggleNew(): void {
@@ -86,6 +72,13 @@ export class ChangePasswordComponent implements OnInit {
       return;
     }
 
+    const token = this.store.getToken();
+    if (!token) {
+      this.errorMessage = 'Session expirée. Veuillez vous reconnecter.';
+      this.router.navigate(['/login']);
+      return;
+    }
+
     this.isLoading = true;
 
     try {
@@ -97,7 +90,7 @@ export class ChangePasswordComponent implements OnInit {
             confirmationMotDePasse: this.confirmPassword,
           },
           {
-            headers: { Authorization: `Bearer ${this.accessToken}` },
+            headers: { Authorization: `Bearer ${token}` },
             withCredentials: true,
           },
         )
@@ -105,20 +98,9 @@ export class ChangePasswordComponent implements OnInit {
 
       this.successMessage = 'Mot de passe défini. Redirection vers la connexion…';
 
-      // Après succès : relancer le flow OAuth2 complet depuis le SSO login.
-      // Le mot de passe a été changé, DoitChangerMotDePasse = false,
-      // donc cette fois le login se terminera normalement avec un code OAuth2.
       setTimeout(() => {
-        const params = new URLSearchParams({
-          client_id: this.clientId,
-          redirect_uri: this.redirectUri,
-          response_type: 'code',
-          scope: this.scope,
-          state: this.state,
-          code_challenge: this.codeChallenge,
-          code_challenge_method: this.codeChallengeMethod,
-        });
-        window.location.href = `/login?${params.toString()}`;
+        this.store.clear();
+        this.router.navigate(['/login']);
       }, 1500);
     } catch (err: any) {
       this.errorMessage = err?.error?.message ?? 'Erreur lors du changement de mot de passe.';
