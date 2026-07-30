@@ -19,7 +19,6 @@ FROM nginx:alpine
 
 RUN apk add --no-cache curl
 
-# Copier le contenu du dossier browser pour chaque application
 COPY --from=build /app/dist/sso/browser /usr/share/nginx/html/sso
 COPY --from=build /app/dist/rh-app/browser /usr/share/nginx/html/rh
 COPY --from=build /app/dist/finance-app/browser /usr/share/nginx/html/finance
