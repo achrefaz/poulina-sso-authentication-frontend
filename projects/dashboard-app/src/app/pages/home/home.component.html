@@ -194,8 +194,8 @@
                       <td class="email-cell">{{ user.email }}</td>
                       <td>
                         <div class="roles-cell">
-                          @for (role of user.roles; track role.id) {
-                            <span class="role-badge-sm">{{ role.nom }}</span>
+                          @for (role of user.roles; track role) {
+                            <span class="role-badge-sm">{{ role }}</span>
                           }
                           @if (user.roles.length === 0) { <span class="no-role">—</span> }
                         </div>
