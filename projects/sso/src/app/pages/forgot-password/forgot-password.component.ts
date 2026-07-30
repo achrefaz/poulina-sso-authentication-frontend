@@ -30,11 +30,8 @@ export class ForgotPasswordComponent {
 
     try {
       await this.authService.forgotPassword(this.email).toPromise();
-      // Toujours succès affiché, même si l'email n'existe pas (anti-énumération)
       this.sent = true;
     } catch {
-      // Le backend répond toujours 200 sur cet endpoint, mais on garde
-      // un filet de sécurité si erreur réseau/serveur.
       this.errorMessage = 'Une erreur est survenue. Réessayez plus tard.';
     } finally {
       this.isLoading = false;
