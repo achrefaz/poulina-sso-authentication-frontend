@@ -26,7 +26,7 @@ interface AppUser {
   emailVerifie: boolean;
   dateCreation: string;
   dateDerniereConnexion: string | null;
-  roles: { id: string; nom: string }[];
+  roles: string[];
 }
 
 interface AuditLogEntry {
@@ -344,7 +344,10 @@ export class HomeComponent implements OnInit {
           this.createLoading = false;
         },
         error: (err) => {
-          this.createError = err?.error?.message ?? 'Erreur lors de la création.';
+          const errors = err?.error?.errors as { field: string; error: string }[] | undefined;
+          this.createError = errors?.length
+            ? errors.map((e) => e.error).join(' ')
+            : (err?.error?.message ?? 'Erreur lors de la création.');
           this.createLoading = false;
         },
       });
