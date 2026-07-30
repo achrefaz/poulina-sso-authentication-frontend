@@ -18,6 +18,8 @@ export class ChangePasswordComponent implements OnInit {
   confirmPassword = '';
   showNew = false;
   showConfirm = false;
+  inputTypeNew = 'password';
+  inputTypeConfirm = 'password';
 
   isLoading = false;
   errorMessage = '';
@@ -36,11 +38,16 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   toggleNew(): void {
-    console.log('clicked', this.showNew);
     this.showNew = !this.showNew;
+    this.inputTypeNew = this.showNew ? 'text' : 'password';
   }
+
   toggleConfirm(): void {
     this.showConfirm = !this.showConfirm;
+    this.inputTypeConfirm = this.showConfirm ? 'text' : 'password';
+  }
+
+  onPasswordInput(): void {
   }
 
   get strength(): 'weak' | 'medium' | 'strong' {
