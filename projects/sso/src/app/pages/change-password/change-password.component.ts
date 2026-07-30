@@ -36,6 +36,7 @@ export class ChangePasswordComponent implements OnInit {
   }
 
   toggleNew(): void {
+    console.log('clicked', this.showNew);
     this.showNew = !this.showNew;
   }
   toggleConfirm(): void {
