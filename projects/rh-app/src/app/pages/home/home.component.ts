@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
-import { TokenStore } from 'shared-auth';
+import { TokenStore, getDisplayRole } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
 import { environment } from '../../../environments/environment';
 
@@ -44,8 +44,6 @@ export class HomeComponent implements OnInit {
 
   private readonly api = environment.apiUrl;
 
-  // private readonly api = 'http://localhost:5095';
-
   constructor(
     private authService: AuthService,
     private tokenStore: TokenStore,
@@ -66,7 +64,6 @@ export class HomeComponent implements OnInit {
 
     try {
       let token = this.tokenStore.getToken();
-
       if (!token) {
         try {
           await this.authService.refresh().toPromise();
@@ -108,6 +105,11 @@ export class HomeComponent implements OnInit {
   get initials(): string {
     if (!this.userInfo) return '?';
     return `${this.userInfo.given_name[0] ?? ''}${this.userInfo.family_name[0] ?? ''}`.toUpperCase();
+  }
+
+
+  get displayRole(): string {
+    return getDisplayRole(this.userInfo?.roles, 'rh');
   }
 
   startMfaSetup(): void {
@@ -226,7 +228,6 @@ export class HomeComponent implements OnInit {
       this.tokenStore.clear();
       sessionStorage.removeItem('sso_roles');
       sessionStorage.removeItem('sso_tokens');
-      // window.location.href = 'http://localhost:4200/login';
       window.location.href = `${environment.ssoUrl}/login`;
     }
   }

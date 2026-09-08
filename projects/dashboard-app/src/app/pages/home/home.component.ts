@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
-import { TokenStore } from 'shared-auth';
+import { TokenStore, getDisplayRole } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
 import { environment } from '../../../environments/environment';
 
@@ -218,6 +218,10 @@ export class HomeComponent implements OnInit {
     }
   }
 
+  get displayRole(): string {
+    return getDisplayRole(this.userInfo?.roles, 'dashboard');
+  }
+
   get initials(): string {
     if (!this.userInfo) return '?';
     return `${this.userInfo.given_name[0] ?? ''}${this.userInfo.family_name[0] ?? ''}`.toUpperCase();
@@ -226,8 +230,6 @@ export class HomeComponent implements OnInit {
   get isAdmin(): boolean {
     return this.userInfo?.roles?.includes('ADMIN') ?? false;
   }
-
-  // ... le reste du code (toutes les méthodes admin, mfa, etc.) reste identique ...
 
   // ── Admin : navigation ────────────────────────────────────────────────────
   openUserList(): void {
