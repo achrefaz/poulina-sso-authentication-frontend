@@ -26,7 +26,7 @@ export class TokenStore {
     return this._accessToken();
   }
 
-  /** Token présent et non expiré (marge de 10 s) */
+  /** Token présent et non expiré  */
   isAuthenticated(): boolean {
     const token = this._accessToken();
     if (!token) {
@@ -49,7 +49,6 @@ export class TokenStore {
     this.refreshPromise = null;
   }
 
-  /** Décode le payload JWT (usage UI uniquement — pas de vérification de signature) */
   decode(token?: string): Record<string, unknown> | null {
     const t = token ?? this._accessToken();
     if (!t) return null;

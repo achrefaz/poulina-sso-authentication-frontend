@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AuthService } from '../../core/services/auth.service';
-import { TokenStore } from 'shared-auth';
+import { TokenStore, getDisplayRole } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
 import { environment } from '../../../environments/environment';
 
@@ -107,6 +107,10 @@ export class HomeComponent implements OnInit {
   get initials(): string {
     if (!this.userInfo) return '?';
     return `${this.userInfo.given_name[0] ?? ''}${this.userInfo.family_name[0] ?? ''}`.toUpperCase();
+  }
+
+  get displayRole(): string {
+    return getDisplayRole(this.userInfo?.roles, 'finance');
   }
 
   startMfaSetup(): void {
