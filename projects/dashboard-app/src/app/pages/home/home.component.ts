@@ -7,6 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { TokenStore, getDisplayRole } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
 import { environment } from '../../../environments/environment';
+import { LogoComponent } from '../../shared/components/logo/logo.component';
 
 type MfaStep = 'idle' | 'qr' | 'verify-setup' | 'disable';
 type AdminView = 'none' | 'list' | 'create' | 'audit' | 'sessions';
@@ -62,14 +63,14 @@ interface PagedResult<T> {
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LogoComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })
 export class HomeComponent implements OnInit {
   userInfo: UserInfo | null = null;
   isLoggingOut = false;
-  isLoading = true; // Ajouté pour l'état de chargement
+  isLoading = true;
   loadError = '';
   today = new Date().toLocaleDateString('fr-FR', {
     weekday: 'long',
@@ -167,7 +168,6 @@ export class HomeComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    // Attendre que le token soit disponible
     this.loadUserInfoWithRetry();
   }
 

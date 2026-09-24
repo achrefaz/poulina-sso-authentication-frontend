@@ -4,17 +4,8 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="brand">
-        <div class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
-            <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <span class="brand-name">Poulina</span>
-          <span class="brand-module">Plateforme Finance</span>
-        </div>
+        <app-logo />
+        <span class="brand-module">Plateforme RH</span>
       </div>
     </div>
 
@@ -50,64 +41,64 @@
     <div class="page-header">
       @if (userInfo) {
         <div>
-          <h1>Bonjour, {{ userInfo.given_name }} 👋</h1>
+          <h1>Bonjour, {{ userInfo.given_name }} </h1>
           <p class="page-sub">Voici votre tableau de bord Finance — {{ today }}</p>
         </div>
       }
     </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon green" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Chiffre d'affaires</p><p class="stat-value">2.4M</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon blue" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Dépenses du mois</p><p class="stat-value">384K</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon amber" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Factures en attente</p><p class="stat-value">18</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon purple" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Résultat net</p><p class="stat-value">+12%</p></div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Stats &ndash;&gt;-->
+<!--    <div class="stats-grid">-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon green" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Chiffre d'affaires</p><p class="stat-value">2.4M</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon blue" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Dépenses du mois</p><p class="stat-value">384K</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon amber" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M22 12h-4l-3 9L9 3l-3 9H2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Factures en attente</p><p class="stat-value">18</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon purple" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Résultat net</p><p class="stat-value">+12%</p></div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <!-- Modules -->
-    <div class="section-header"><h2>Modules disponibles</h2></div>
-    <div class="modules-grid">
-      <button class="module-card" type="button">
-        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Comptabilité</h3><p>Écritures et grand livre</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Trésorerie</h3><p>Flux et prévisions de trésorerie</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Facturation</h3><p>Devis, factures et avoirs</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="module-body"><h3>Reporting</h3><p>Tableaux de bord financiers</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
+<!--    &lt;!&ndash; Modules &ndash;&gt;-->
+<!--    <div class="section-header"><h2>Modules disponibles</h2></div>-->
+<!--    <div class="modules-grid">-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Comptabilité</h3><p>Écritures et grand livre</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="5" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M2 10h20" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Trésorerie</h3><p>Flux et prévisions de trésorerie</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><polyline points="14 2 14 8 20 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Facturation</h3><p>Devis, factures et avoirs</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Reporting</h3><p>Tableaux de bord financiers</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--    </div>-->
 
     <!-- Profil + MFA -->
     @if (userInfo) {

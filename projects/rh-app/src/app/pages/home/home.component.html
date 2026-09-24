@@ -4,17 +4,8 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="brand">
-        <div class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
-            <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <span class="brand-name">Poulina</span>
-          <span class="brand-module">Plateforme RH</span>
-        </div>
+        <app-logo />
+        <span class="brand-module">Plateforme RH</span>
       </div>
     </div>
 
@@ -50,64 +41,64 @@
     <div class="page-header">
       @if (userInfo) {
         <div>
-          <h1>Bonjour, {{ userInfo.given_name }} 👋</h1>
+          <h1>Bonjour, {{ userInfo.given_name }}</h1>
           <p class="page-sub">Voici votre tableau de bord RH — {{ today }}</p>
         </div>
       }
     </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon blue" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Employés actifs</p><p class="stat-value">247</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon green" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Congés en attente</p><p class="stat-value">12</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon amber" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Recrutements ouverts</p><p class="stat-value">5</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon purple" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Formations ce mois</p><p class="stat-value">8</p></div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Stats &ndash;&gt;-->
+<!--    <div class="stats-grid">-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon blue" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Employés actifs</p><p class="stat-value">247</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon green" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Congés en attente</p><p class="stat-value">12</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon amber" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="1.5"/><path d="M12 7v5l3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Recrutements ouverts</p><p class="stat-value">5</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon purple" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Formations ce mois</p><p class="stat-value">8</p></div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <!-- Modules -->
-    <div class="section-header"><h2>Modules disponibles</h2></div>
-    <div class="modules-grid">
-      <button class="module-card" type="button">
-        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg></div>
-        <div class="module-body"><h3>Gestion des employés</h3><p>Consulter et gérer les dossiers</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Paie</h3><p>Salaires et bulletins de paie</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Congés & absences</h3><p>Gestion des demandes de congés</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="module-body"><h3>Recrutement</h3><p>Suivi des candidatures</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-    </div>
+<!--    &lt;!&ndash; Modules &ndash;&gt;-->
+<!--    <div class="section-header"><h2>Modules disponibles</h2></div>-->
+<!--    <div class="modules-grid">-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/></svg></div>-->
+<!--        <div class="module-body"><h3>Gestion des employés</h3><p>Consulter et gérer les dossiers</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Paie</h3><p>Salaires et bulletins de paie</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><rect x="3" y="4" width="18" height="18" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M16 2v4M8 2v4M3 10h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Congés & absences</h3><p>Gestion des demandes de congés</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Recrutement</h3><p>Suivi des candidatures</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--    </div>-->
 
     <!-- Profil + MFA -->
     @if (userInfo) {

@@ -1,13 +1,3 @@
-export interface OAuthParams {
-  clientId: string;
-  redirectUri: string;
-  responseType: string;
-  scope: string;
-  state: string | null;
-  codeChallenge: string;
-  codeChallengeMethod: string;
-}
-
 export interface LoginDirectResponse {
   accessToken?: string;
   expiresIn?: number;
