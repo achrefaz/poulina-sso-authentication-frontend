@@ -7,13 +7,15 @@ import { AuthService } from '../../core/services/auth.service';
 import { TokenStore, getDisplayRole } from 'shared-auth';
 import type { UserInfo } from 'shared-auth';
 import { environment } from '../../../environments/environment';
+import { LogoComponent } from '../../shared/components/logo/logo.component';
+
 
 type MfaStep = 'idle' | 'qr' | 'verify-setup' | 'disable';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, LogoComponent],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss',
 })

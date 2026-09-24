@@ -4,17 +4,8 @@
   <header class="topbar">
     <div class="topbar-left">
       <div class="brand">
-        <div class="brand-icon" aria-hidden="true">
-          <svg viewBox="0 0 32 32" fill="none">
-            <ellipse cx="16" cy="16" rx="14" ry="14" stroke="currentColor" stroke-width="2"/>
-            <path d="M8 24 C8 16 16 8 24 10" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-            <path d="M16 6 C16 14 24 18 24 26" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
-        </div>
-        <div>
-          <span class="brand-name">Poulina</span>
-          <span class="brand-module">Tableau de bord Direction</span>
-        </div>
+        <app-logo />
+        <span class="brand-module">Plateforme RH</span>
       </div>
     </div>
 
@@ -50,58 +41,58 @@
     <div class="page-header">
       @if (userInfo) {
         <div>
-          <h1>Bonjour, {{ userInfo.given_name }} 👋</h1>
+          <h1>Bonjour, {{ userInfo.given_name }}</h1>
           <p class="page-sub">Tableau de bord Direction — {{ today }}</p>
         </div>
       }
     </div>
 
-    <!-- Stats -->
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-icon purple" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Subsidiaires actives</p><p class="stat-value">14</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon blue" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
-        </div>
-        <div><p class="stat-label">Effectif total</p><p class="stat-value">{{ users.length || '—' }}</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon green" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Croissance annuelle</p><p class="stat-value">+8.4%</p></div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon amber" aria-hidden="true">
-          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        </div>
-        <div><p class="stat-label">Projets stratégiques</p><p class="stat-value">7</p></div>
-      </div>
-    </div>
+<!--    &lt;!&ndash; Stats &ndash;&gt;-->
+<!--    <div class="stats-grid">-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon purple" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Subsidiaires actives</p><p class="stat-value">14</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon blue" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Effectif total</p><p class="stat-value">{{ users.length || '—' }}</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon green" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Croissance annuelle</p><p class="stat-value">+8.4%</p></div>-->
+<!--      </div>-->
+<!--      <div class="stat-card">-->
+<!--        <div class="stat-icon amber" aria-hidden="true">-->
+<!--          <svg viewBox="0 0 24 24" fill="none"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--        </div>-->
+<!--        <div><p class="stat-label">Projets stratégiques</p><p class="stat-value">7</p></div>-->
+<!--      </div>-->
+<!--    </div>-->
 
     <!-- Modules -->
     <div class="section-header"><h2>Modules disponibles</h2></div>
     <div class="modules-grid">
-      <button class="module-card" type="button">
-        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-        <div class="module-body"><h3>Performance globale</h3><p>KPI et indicateurs clés</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Subsidiaires</h3><p>Vue consolidée du groupe</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
-      <button class="module-card" type="button">
-        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
-        <div class="module-body"><h3>Finances consolidées</h3><p>Résultats et bilans groupe</p></div>
-        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-      </button>
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon purple"><svg viewBox="0 0 24 24" fill="none"><path d="M3 3v18h18" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M7 16l4-4 4 4 4-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Performance globale</h3><p>KPI et indicateurs clés</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon blue"><svg viewBox="0 0 24 24" fill="none"><rect x="2" y="3" width="20" height="14" rx="2" stroke="currentColor" stroke-width="1.5"/><path d="M8 21h8M12 17v4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Subsidiaires</h3><p>Vue consolidée du groupe</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
+<!--      <button class="module-card" type="button">-->
+<!--        <div class="module-icon green"><svg viewBox="0 0 24 24" fill="none"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>-->
+<!--        <div class="module-body"><h3>Finances consolidées</h3><p>Résultats et bilans groupe</p></div>-->
+<!--        <svg class="module-arrow" viewBox="0 0 20 20" fill="none"><path d="M7 10h6M10 7l3 3-3 3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>-->
+<!--      </button>-->
       <button class="module-card" type="button" (click)="isAdmin && openUserList()">
         <div class="module-icon amber"><svg viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="9" cy="7" r="4" stroke="currentColor" stroke-width="1.5"/><path d="M19 8v6M22 11h-6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></div>
         <div class="module-body"><h3>Gestion des utilisateurs</h3><p>Créer, gérer et bloquer les comptes</p></div>

@@ -409,3 +409,15 @@ $bg:      #f4f7fa;
   .mfa-header { flex-direction: column; }
   .btn-mfa-enable, .btn-mfa-disable { width: 100%; justify-content: center; }
 }
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-module {
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+  padding-left: 12px;
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+}

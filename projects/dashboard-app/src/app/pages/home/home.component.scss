@@ -1117,3 +1117,16 @@ $bg:      #f4f7fa;
     }
   }
 }
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.brand-module {
+  font-size: 0.75rem;
+  color: var(--text-muted, #6b7280);
+  padding-left: 12px;
+  border-left: 1px solid rgba(0, 0, 0, 0.15);
+}
