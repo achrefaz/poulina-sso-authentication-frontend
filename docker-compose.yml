@@ -1,5 +1,8 @@
 services:
   frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
     image: hsinemt/poulina-sso-frontend:latest
     container_name: poulina-sso-frontend
     ports:
